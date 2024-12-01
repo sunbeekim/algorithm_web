@@ -1,0 +1,187 @@
+.header-item {
+    position: relative;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 15px;
+    color: #ffffff !important;
+    text-decoration: none;
+    transition: var(--transition-default);
+    cursor: pointer;
+    user-select: none;
+}
+
+.header-item .text {
+    display: none;
+}
+
+.header-item .icon {
+    font-size: 1.5rem;
+    padding: 8px;
+    color: #ffffff;
+    filter: drop-shadow(2px 2px 4px rgba(0, 0, 0, 0.2));
+    transition: all 0.2s ease;
+}
+
+.header-item .tooltip {
+    position: absolute;
+    top: 100%;
+    left: 50%;
+    transform: translateX(-50%);
+    background-color: rgba(0, 0, 0, 0.8);
+    color: rgb(255, 255, 255);
+    padding: 6px 12px;
+    border-radius: 4px;
+    font-size: 14px;
+    white-space: nowrap;
+    opacity: 0;
+    visibility: hidden;
+    transition: var(--transition-default);
+    pointer-events: none;
+    z-index: 1000;
+}
+
+.header-item .tooltip::before {
+    content: '';
+    position: absolute;
+    bottom: 100%;
+    left: 50%;
+    transform: translateX(-50%);
+    border: 6px solid transparent;
+    border-bottom-color: rgba(0, 0, 0, 0.8);
+}
+
+.header-item:hover {
+    text-shadow: 0 0 20px rgba(255, 255, 255, 0.8);
+    transform: translateY(-1px);
+}
+
+.header-item:hover .icon {
+    color: rgba(0, 0, 0, 0.8);  /* 완전한 검정보다는 살짝 투명도를 줘서 부드럽게 */
+    transform: translateY(-2px);
+    filter: brightness(0.85);  /* 살짝 어둡게 만들어서 진해보이는 효과 */
+    transition: all 0.2s ease;  /* 부드러운 전환 효과 */
+}
+.header-item:hover .icon .text {
+    color: #000000;
+    transform: translateY(-1px);
+}
+
+.header-item:hover .tooltip {
+    opacity: 1;
+    visibility: visible;
+    top: calc(100% + 10px);
+}
+/* 파동 애니메이션 */
+.header-item::before,
+.header-item::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 25%;
+    width: 20px;
+    height: 20px;
+    background: rgb(255, 255, 255);
+    border-radius: 50%;
+    transform: translate(-50%, -50%) scale(0);
+    opacity: 0;
+}
+
+.header-item::before {
+    animation: none;
+    transition: transform 0.5s ease, opacity 0.5s ease;
+}
+
+.header-item::after {
+    animation: none;
+    transition: transform 0.7s ease, opacity 0.7s ease;
+}
+
+.header-item:hover::before {
+    animation: ripple 1s ease-out infinite;
+}
+
+.header-item:hover::after {
+    animation: ripple 1s ease-out 0.3s infinite;
+}
+
+@keyframes ripple {
+    0% {
+        transform: translate(-50%, -50%) scale(0);
+        opacity: 0.8;
+    }
+    50% {
+        opacity: 0.4;
+    }
+    100% {
+        transform: translate(-50%, -50%) scale(4);
+        opacity: 0;
+    }
+}
+
+@media (max-width: 768px) {
+    
+    .header-item .tooltip {
+        display: none;
+    }
+    
+    .header-item .icon {
+        font-size: 1.2rem;
+        padding: 6px;
+    }
+    .header-item::before,
+.header-item::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 25%;
+    width: 20px;
+    height: 20px;
+    background: rgb(255, 255, 255);
+    border-radius: 50%;
+    transform: translate(-50%, -50%) scale(0);
+        opacity: 0;
+    }
+
+    .header-item .icon {
+        font-size: 1.3rem;
+        padding: 8px;
+        color: #ffffff;
+        filter: drop-shadow(2px 2px 4px rgba(0, 0, 0, 0.2));
+    }
+}
+
+/* 모바일 드롭다운에서는 텍스트 표시 */
+.mobile-dropdown .header-item .text {
+    display: block;
+    color: #ffffff;
+    font-size: 1rem;
+    font-weight: 500;
+    margin-left: 10px;
+}
+
+/* 모바일 드롭다운에서의 아이템 스타일 조정 */
+.mobile-dropdown .header-item {
+    padding: 15px 20px;
+    width: 100%;
+
+    justify-content: flex-start;  /* 왼쪽 정렬 */
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.mobile-dropdown .header-item:last-child {
+    border-bottom: none;
+}
+
+/* 모바일 드롭다운에서의 아이콘 스타일 */
+.mobile-dropdown .header-item .icon {
+    font-size: 1.3rem;
+    padding: 0;
+    margin-left: 5px;
+    min-width: 24px;  /* 아이콘 너비 고정 */
+}
+
+/* 모바일 드롭다운에서의 호버 효과 */
+.mobile-dropdown .header-item:hover {
+    background: rgba(255, 255, 255, 0.1);
+}

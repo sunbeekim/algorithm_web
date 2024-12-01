@@ -1,0 +1,89 @@
+.auth-button {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 8px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    min-width: 80px;
+    height: 40px;
+    position: relative;
+}
+
+.auth-button .text {
+    display: none;
+}
+
+.auth-button .icon {
+    font-size: 2rem;
+    color: white;
+}
+
+.auth-button.login {
+    background-color: transparent;
+}
+
+.auth-button.login:hover .icon {
+    color: rgb(0, 0, 0);
+}
+
+.auth-button.login:hover {
+    background-color: rgba(255, 255, 255, 0.1);
+}
+
+.auth-button.logout {
+    background-color: transparent;
+
+}
+
+.auth-button.logout .icon {
+    color: rgb(255, 255, 255);
+}
+
+.auth-button.logout:hover .icon {
+    color: rgb(255, 0, 0);
+}
+
+.auth-button.logout:hover {
+    background-color: rgb(255, 255, 255);
+}
+
+.auth-button .tooltip {
+    position: absolute;
+    top: 100%;
+    left: 50%;
+    transform: translateX(-50%);
+    background-color: rgba(0, 0, 0, 0.8);
+    color: white;
+    padding: 4px 8px;
+    border-radius: 4px;
+    font-size: 14px;
+    white-space: nowrap;
+    opacity: 0;
+    visibility: hidden;
+    transition: all 0.3s ease;
+    pointer-events: none;
+}
+
+.auth-button:hover .tooltip {
+    opacity: 1;
+    visibility: visible;
+    top: calc(100% + 5px);
+}
+
+@media (max-width: 768px) {
+    .auth-button {
+        min-width: 35px;
+        height: 35px;
+    }
+    
+    .auth-button .icon {
+        font-size: 2rem;
+    }
+
+    .auth-button .tooltip {
+        display: none;
+    }
+}

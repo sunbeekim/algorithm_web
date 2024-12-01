@@ -1,0 +1,196 @@
+.bottom {
+    background-color: #006666;
+    color: white;
+    padding: 40px 0 0;
+    width: 100%;
+    min-height: 300px;
+    display: flex;
+    flex-direction: column;
+    position: relative;
+    height: auto;
+}
+
+.bottom-content {
+    max-width: 1200px;
+    margin: 0 auto;
+    display: flex;
+    justify-content: space-between;
+    padding: 0 20px;
+    flex-wrap: wrap;
+    gap: 40px;
+    flex: 1;
+    background-color: #006666;
+}
+
+.bottom-section {
+    flex: 1;
+    min-width: 250px;
+    background-color: #006666;
+}
+
+.bottom-section h3 {
+    color: #17eeee;
+    margin-bottom: 20px;
+    font-size: 1.2rem;
+}
+
+.bottom-section ul {
+    list-style: none;
+    padding: 0;
+}
+
+.bottom-section ul li {
+    margin-bottom: 10px;
+}
+
+.bottom-section a {
+    color: white;
+    text-decoration: none;
+    transition: all 0.3s ease;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.bottom-section a:hover {
+    color: #17eeee;
+    transform: translateX(5px);
+}
+
+.contact-info {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    width: 100%;
+}
+
+.contact-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    color: white;
+    text-decoration: none;
+    width: 100%;
+}
+
+.contact-item span {
+    flex: 1;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.contact-icon {
+    font-size: 1.2rem;
+    color: #17eeee;
+    min-width: 20px;
+}
+
+.bottom-footer {
+    margin-top: 30px;
+    padding: 20px 0;
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+    text-align: center;
+    font-size: 0.9rem;
+    background-color: rgba(0, 0, 0, 0.1);
+    width: 100%;
+    background-color: #006666;
+}
+
+/* 태블릿 화면 */
+@media (max-width: 1024px) {
+    .bottom-content {
+        padding: 0 30px;
+        gap: 30px;
+    }
+
+    .bottom-section {
+        min-width: 200px;
+    }
+}
+
+/* 모바일 화면 */
+@media (max-width: 768px) {
+    .bottom {
+        height: auto;
+        background-color: #006666;
+    }
+
+    .bottom-content {
+        flex-direction: column;
+        gap: 40px;
+        padding: 0 20px 20px;
+    }
+
+    .bottom-section {
+        text-align: center;
+        min-width: 100%;
+        max-width: none;
+        width: 100%;
+    }
+
+    .bottom-section ul {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 12px;
+    }
+
+    .bottom-section ul li {
+        margin-bottom: 0;
+    }
+
+    .contact-item {
+        justify-content: flex-start;
+    }
+
+    .contact-info {
+        width: 100%;
+        padding: 0 15px;
+    }
+}
+
+/* 작은 모바일 화면 */
+@media (max-width: 480px) {
+    .bottom {
+        padding: 20px 0 0;
+        background-color: #006666;
+    }
+
+    .bottom-content {
+        gap: 30px;
+        padding: 0 15px;
+    }
+
+    .bottom-section h3 {
+        font-size: 1.1rem;
+    }
+
+    .bottom-section, .contact-info {
+        font-size: 0.9rem;
+    }
+
+    .bottom-footer {
+        margin-top: 20px;
+        padding: 15px 0;
+        font-size: 0.8rem;
+    }
+
+    .bottom-section {
+        width: 100%;
+        padding: 0;
+    }
+
+    .contact-info {
+        padding: 0 10px;
+    }
+
+    .contact-item {
+        font-size: 0.9rem;
+    }
+
+    .contact-icon {
+        font-size: 1rem;
+        min-width: 16px;
+    }
+}
