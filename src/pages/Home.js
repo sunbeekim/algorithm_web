@@ -3,8 +3,13 @@ import BodyRectangle from '../components/BodyRectangle';
 import './Home.css';
 import HorizontalContent from '../components/HorizontalContent';
 import VerticalContent from '../components/VerticalContent';
+import { Link } from 'react-router-dom';
+import { FaChartBar } from 'react-icons/fa';
+import { AuthContext } from '../context/AuthContext';
 
 class Home extends Component {
+  static contextType = AuthContext;
+
   componentDidMount() {
     // 초기 로드 시 첫 번째 섹션은 보이게 설정
     const mainSection = document.querySelector('.main-section');
@@ -34,12 +39,23 @@ class Home extends Component {
   }
 
   render() {
+    const { state: authState } = this.context;
+
     return (
       <div className="home-container">
         {/* 메인 섹션: 인사말 */}
         <section className="section main-section">
           <BodyRectangle>
             <div className="home-content">
+              {/* 관리자 링크 추가 */}
+              {authState.isAuthenticated && authState.user?.roleId === 1 && (
+                <div className="admin-link">
+                  <Link to="/admin" className="admin-button">
+                    <FaChartBar />
+                    <span>관리자 페이지</span>
+                  </Link>
+                </div>
+              )}
               <h1>Hello!</h1>
               <h2>My Name is<br/>Sun Bee</h2>
             </div>

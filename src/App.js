@@ -15,6 +15,7 @@ import Bottom from './components/Bottom';
 import Layout from './components/Layout';
 import VerticalContent from './components/VerticalContent';
 import { FaArrowUp } from 'react-icons/fa';
+import Admin from './pages/Admin';
 
 function App() {
   const [showButton, setShowButton] = useState(false);
@@ -68,6 +69,7 @@ function App() {
             <Route path="/algorithm" element={<Algorithm />} />
             <Route path="/ranking" element={<Ranking />} />
             <Route path="/paint" element={<Paint />} />
+            <Route path="/admin" element={<Admin />} />
             <Route path="*" element={<Navigate to="/" replace />} />
           </Routes>
         </div>

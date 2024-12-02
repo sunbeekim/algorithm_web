@@ -2,7 +2,7 @@ html, body, #root {
   height: 100%;
   margin: 0;
   padding: 0;
-  background-color: #000000;
+  background-color: #ffffff;
 }
 
 body {
@@ -19,7 +19,7 @@ body {
   min-height: 100vh;
   display: flex;
   flex-direction: column;
-  background-color: #000000;
+  background-color: #ffffff;
 }
 
 code {

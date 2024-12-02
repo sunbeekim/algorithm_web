@@ -36,7 +36,7 @@ const JWT_SECRET = 'your-secret-key';
 // CORS 설정 추가
 
 app.use(cors({
-    origin: true,  // 모든 origin 허��
+    origin: true,  // 모든 origin 허
     credentials: true, // 쿠키 포함 허용
     methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'], // 허용된 HTTP 메소드
     allowedHeaders: ['Content-Type', 'Accept', 'Authorization', 'Cookie', 'X-Requested-With'], // 허용된 헤더
@@ -108,13 +108,13 @@ const db = mysql.createConnection({
     port: 3306, // 데이터베이스 포트
     user: 'aluser1', // 데이터베이스 사용자
     password: 'alpassword2450!', // 데이터베이스 비밀번호
-    database: 'basicdb' // ���이터베이스 이름
+    database: 'basicdb' // 이터베이스 이름
 });
 
 // 데이터베이스 연결
-db.connect((err) => { 
-    if (err) { 
-        console.error('데이터베이스 연결 실패:', err); 
+db.connect((err) => {
+    if (err) {
+        console.error('데이터베이스 연결 실패:', err);
         return;
     }
     console.log('데이터베이스 연결 성공');
@@ -217,68 +217,69 @@ app.get('/api/check-auth', (req, res) => { // 엔드포인트 추가
 });
 
 // 로그인 엔드포인트
-app.post('/api/login', (req, res) => { // 엔드포인트 추가
-    console.log('로그인 요청 데이터:', req.body); // 로그인 요청 데이터 로깅
+app.post('/api/login', (req, res) => {
+  console.log('로그인 요청 데이터:', req.body); // 로그인 요청 데이터 로깅
 
-    const { id: username, pw: password } = req.body; // 요청 본문에서 사용자 이름과 비밀번호 추출
-    const ipAddress = req.ip; // 클라이언트 IP 주소
-    const userAgent = req.headers['user-agent']; // 클라이언트 사용자 에이전트
+  const { id: username, pw: password } = req.body; // 요청 본문에서 사용자 이름과 비밀번호 추출
+  const ipAddress = req.ip; // 클라이언트 IP 주소
+  const userAgent = req.headers['user-agent']; // 클라이언트 사용자 에이전트
 
-    console.log('로그인 시도:', { username, ipAddress });
+  console.log('로그인 시도:', { username, ipAddress });
 
-    // 1. 먼저 users 테이블에서 사용자 ID 조회
-    const userQuery = 'SELECT user_id, username, password FROM users WHERE username = ?';
-    
-    db.query(userQuery, [username], (err, users) => { // 사용자 조회
-        if (err) {
-            console.error('사용자 조회 실패:', err);
-            return res.status(500).json({ error: '서버 오류가 발생했습니다.' });
-        }
+  // 1. 먼저 users 테이블에서 사용자 ID 조회
+  const userQuery = 'SELECT user_id, username, password, role_id FROM users WHERE username = ?';
+  
+  db.query(userQuery, [username], (err, users) => { // 사용자 조회
+    if (err) {
+      console.error('사용자 조회 실패:', err);
+      return res.status(500).json({ error: '서버 오류가 발생했습니다.' });
+    }
 
-        if (users.length === 0) {
-            // 사용자가 없는 경우 로그인 실패 기록
-            const failHistoryQuery = `
-                INSERT INTO login_history 
-                (user_id, session_id, ip_address, login_status, fail_reason) 
-                VALUES (NULL, NULL, ?, 'fail', ?)
-            `;
-            db.query(failHistoryQuery, [ipAddress, '사용자를 찾을 수 없음']);
-            return res.status(401).json({ error: '사용자를 찾을 수 없습니다.' });
-        }
+    if (users.length === 0) {
+      // 사용자가 없는 경우 로그인 실패 기록
+      const failHistoryQuery = `
+        INSERT INTO login_history 
+        (user_id, session_id, ip_address, login_status, fail_reason) 
+        VALUES (NULL, NULL, ?, 'fail', ?)
+      `;
+      db.query(failHistoryQuery, [ipAddress, '사용자를 찾을 수 없음']);
+      return res.status(401).json({ error: '사용자를 찾을 수 없습니다.' });
+    }
 
-        const user = users[0]; // 사용자 정보
-        const userId = user.user_id; // 사용자 ID
+    const user = users[0]; // 사용자 정보
+    const userId = user.user_id; // 사용자 ID
 
-        if (password !== user.password) { // 비밀번호 불일치 검사
-            // 비밀번호 불일치 로그인 실패 기록
-            const failHistoryQuery = `
-                INSERT INTO login_history 
-                (user_id, session_id, ip_address, login_status, fail_reason) 
-                VALUES (?, NULL, ?, 'fail', ?)
-            `;
-            db.query(failHistoryQuery, [userId, ipAddress, '비밀번호 불일치']);
-            return res.status(401).json({ error: '비밀번호가 일치하지 않습니다.' });
-        }
+    if (password !== user.password) { // 비밀번호 불일치 검사
+      // 비밀번호 불일치 로그인 실패 기록
+      const failHistoryQuery = `
+        INSERT INTO login_history 
+        (user_id, session_id, ip_address, login_status, fail_reason) 
+        VALUES (?, NULL, ?, 'fail', ?)
+      `;
+      db.query(failHistoryQuery, [userId, ipAddress, '비밀번호 불일치']);
+      return res.status(401).json({ error: '비밀번호가 일치하지 않습니다.' });
+    }
 
-        // JWT 토큰 생성
-        const token = jwt.sign(
-            { 
-                userId: user.user_id,  // user_id를 userId로 저장
-                username: user.username
-            },
-            JWT_SECRET,
-            { expiresIn: '24h' }
-        );
-        console.log('JWT 토큰 생성 완료');
+    // JWT 토큰 생성
+    const token = jwt.sign(
+      { 
+        userId: user.user_id,
+        username: user.username,
+        roleId: user.role_id
+      },
+      JWT_SECRET,
+      { expiresIn: '24h' }
+    );
+    console.log('JWT 토큰 생성 완료');
 
-        // 세션 생성
-        const sessionId = createSessionAndRecordLogin(userId, token, ipAddress, userAgent, req);
+    // 세션 생성
+    const sessionId = createSessionAndRecordLogin(userId, token, ipAddress, userAgent, req);
 
-        res.cookie('token', token, {
-            httpOnly: true,
-            secure: process.env.NODE_ENV === 'production',
-            maxAge: 24 * 60 * 60 * 1000
-        });
+    res.cookie('token', token, {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === 'production',
+      maxAge: 24 * 60 * 60 * 1000
+    });
 
         console.log('로그인 완료:', { userId});
         res.json({
@@ -303,7 +304,7 @@ app.post('/api/logout', (req, res) => { // 엔드포인트 추가
     
     if (!token) {
         console.log('로그아웃 실패: 토큰 없음'); 
-        return res.status(401).json({ error: '로그인되어 있지 않���니다.' });
+        return res.status(401).json({ error: '로그인되어 있지 않니다.' });
     }
 
     // 1. 유효한 세션 찾기
@@ -398,7 +399,7 @@ app.post('/api/posts', verifyToken, (req, res) => {
     db.query(query, [title, content, author, category, userId], (err, result) => {
         if (err) {
             console.error('게시글 작성 실패:', err);
-            return res.status(500).json({ error: '게시글 작성에 실패했습니��.' });
+            return res.status(500).json({ error: '게시글 작성에 실패했습니.' });
         }
         res.json({ 
             id: result.insertId,
@@ -437,7 +438,7 @@ app.put('/api/posts/:id', verifyToken, (req, res) => {
             return res.status(403).json({ error: '수정 권한이 없습니다.' });
         }
 
-        // 게시글 수정
+        // 게��글 수정
         const query = 'UPDATE posts SET title = ?, content = ?, category = ? WHERE post_id = ?';
         db.query(query, [title, content, category, postId], (err) => {
             if (err) {
@@ -450,7 +451,7 @@ app.put('/api/posts/:id', verifyToken, (req, res) => {
 });
 
 // 게시글 삭제 (작성자 전용) api/posts/:id (api경로)
-// express()객체의 delete()메소드를 오버로딩? ���자값은 (path, middleware/선택(일종의 조건문같은 느낌), handler - 여기서는 callback 씀) 
+// express()객체의 delete()메소드를 오버로딩? 자값은 (path, middleware/선택(일종의 조건문같은 느낌), handler - 여기서는 callback 씀) 
 app.delete('/api/posts/:id', verifyToken, (req, res) => {// 엔드포인트 추가
     // 미들웨어를 안쓰면 바로 callback 함수 호출
     // 미들웨어를 쓰면 미들웨어 호출 후 callback 함수 호출
@@ -463,7 +464,7 @@ app.delete('/api/posts/:id', verifyToken, (req, res) => {// 엔드포인트 추�
     // 클라이언트가 서버에 요청을 보낼 때, Express.js가 요청의 내용을 req 객체에 담아 서버로 전달
     // ex) delete 버튼을 누른 시점에 app이 가지고 있는 req[params, query, body, headers]에 요청의 내용이 담김
     // 클라이언트가 서버로 요청을 보낼 때 CORS 설정에 의해 허용된 출처가 아니면 요청 자체가 차단됨
-    // ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'] 메소드 중 하나로 요청이 ��야 서버가 응답함
+    // ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'] 메소드 중 하나로 요청이 야 서버가 응답함
     // (req, res) => {} 는 req객체정보를 이용해서 작업을 수행하고 callback 함수이기에 작업 결과를 res 객체에 담아 응답
     // 결국 delete 메서드는 req를 가지고 null인 res를 데이터를 가진 객체로 반환하는 메서드
     // res는 작업이 아닌 작업결과를 응답하는 객체
@@ -478,7 +479,7 @@ app.delete('/api/posts/:id', verifyToken, (req, res) => {// 엔드포인트 추�
     // 수정할때도 마찬가지로 수정한 값을 DB에 저장하고
     // 수정 값은 JSON 형태로 웹 내에서 보관
     // 그러면 게시판 조회 시 쿼리를 안보내고 JSON 형태로 조회만 하면 됨
-    // 결론은 삽입, 수정 시에만 DB에 저장하고 조회, 삭제는 웹 ��에서 처리
+    // 결론은 삽입, 수정 시에만 DB에 저장하고 조회, 삭제는 웹 내에서 처리
     // 그런데 사용량이 많아야 쿼리 줄이는 것이 의미가 있을 듯
     // 사용량이 적어서 웹 내에서 처리하는 게 낫지만, 이미 만든거 굳이 바꿀 필요는 없음
 
@@ -919,7 +920,7 @@ app.post('/api/signup', async (req, res) => {
           name, 
           email, 
           phone,
-          2  // 일반 사용자 role_id (관리자는 1)
+          4  // 일반 사용자 role_id (관리자는 1)
         ],
         (err, result) => {
           if (err) {
@@ -943,6 +944,81 @@ app.post('/api/signup', async (req, res) => {
       error: '회원가입 처리 중 오류가 발생했습니다.' 
     });
   }
+});
+
+// 관리자 권한 확인 미들웨어
+const verifyAdmin = async (req, res, next) => {
+  try {
+    const token = req.cookies.token;
+    if (!token) {
+      return res.status(401).json({ error: '인증이 필요합니다.' });
+    }
+
+    const decoded = jwt.verify(token, JWT_SECRET);
+    const query = 'SELECT role_id FROM users WHERE user_id = ?';
+    
+    db.query(query, [decoded.userId], (err, results) => {
+      if (err || !results.length) {
+        return res.status(401).json({ error: '사용자를 찾을 수 없습니다.' });
+      }
+      
+      if (results[0].role_id !== 1) {  // role_id가 1(admin)이 아닌 경우
+        return res.status(403).json({ error: '관리자 권한이 필요합니다.' });
+      }
+      
+      next();
+    });
+  } catch (error) {
+    res.status(401).json({ error: '인증이 만료되었습니다.' });
+  }
+};
+
+// 사용자 목록 조회 (관리자 전용)
+app.get('/api/admin/users', verifyAdmin, (req, res) => {
+  const query = `
+    SELECT u.*, r.name as role_name 
+    FROM users u 
+    JOIN roles r ON u.role_id = r.id
+    ORDER BY u.created_at DESC
+  `;
+  
+  db.query(query, (err, results) => {
+    if (err) {
+      console.error('사용자 목록 조회 실패:', err);
+      return res.status(500).json({ error: '서버 오류가 발생했습니다.' });
+    }
+    res.json(results);
+  });
+});
+
+// 사용자 권한 변경 (관리자 전용)
+app.put('/api/admin/users/:id/role', verifyAdmin, (req, res) => {
+  const { id } = req.params;
+  const { roleId } = req.body;
+  
+  const query = 'UPDATE users SET role_id = ? WHERE user_id = ?';
+  db.query(query, [roleId, id], (err) => {
+    if (err) {
+      console.error('권한 변경 실패:', err);
+      return res.status(500).json({ error: '권한 변경에 실패했습니다.' });
+    }
+    res.json({ message: '권한이 변경되었습니다.' });
+  });
+});
+
+// 사용자 상태 변경 (관리자 전용)
+app.put('/api/admin/users/:id/status', verifyAdmin, (req, res) => {
+  const { id } = req.params;
+  const { status } = req.body;
+  
+  const query = 'UPDATE users SET status = ? WHERE user_id = ?';
+  db.query(query, [status, id], (err) => {
+    if (err) {
+      console.error('상태 변경 실패:', err);
+      return res.status(500).json({ error: '상태 변경에 실패했습니다.' });
+    }
+    res.json({ message: '상태가 변경되었습니다.' });
+  });
 });
 
 // 서버 시작

@@ -2,13 +2,16 @@
 // src/context/AuthContext.js
 import React, { createContext, useContext, useReducer, useEffect } from 'react';
 
-const AuthContext = createContext();
+// AuthContext 생성
+export const AuthContext = createContext();
 
+// 초기 상태
 const initialState = {
     isAuthenticated: false,
     user: null,
-    loading: true  // 초기 로딩 상태 추가
-};
+    loading: false,
+    error: null
+  };
 
 function authReducer(state, action) {
     switch (action.type) {

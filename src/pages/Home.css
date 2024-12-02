@@ -65,3 +65,31 @@
     opacity: 1;
     transform: translateY(0);
 }
+
+.admin-link {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    z-index: 100;
+}
+
+.admin-button {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 20px;
+    background-color: #1d9abc;
+    color: white;
+    border-radius: 4px;
+    text-decoration: none;
+    transition: background-color 0.3s;
+    font-size: 16px;
+}
+
+.admin-button:hover {
+    background-color: #167a96;
+}
+
+.admin-button svg {
+    font-size: 20px;
+}

@@ -198,6 +198,18 @@ function Header() {
                                 }}
                             />
                         ))}
+                        {/* 관리자 메뉴 추가 */}
+                        {authState.isAuthenticated && authState.user?.roleId === 1 && (
+                            <HeaderItem 
+                                to="/admin"
+                                icon={<FaChartBar />}
+                                tooltip="관리자"
+                                onClick={(e) => {
+                                    e.preventDefault();
+                                    navigate('/admin');
+                                }}
+                            />
+                        )}
                     </div>
                     <div className="logright">
                     <AuthButton 
