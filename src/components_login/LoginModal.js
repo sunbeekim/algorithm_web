@@ -60,7 +60,7 @@ class LoginModal extends Component {
                   value={this.state.username}
                   onChange={this.handleChange}
                   required
-                  autoComplete="username"
+                  autoComplete="usernaame"
                 />
               </div>
               <div className="input-group">

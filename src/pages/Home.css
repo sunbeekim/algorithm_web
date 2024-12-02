@@ -1,0 +1,67 @@
+.home-container {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    background-color: rgb(255, 255, 255);
+}
+
+/* 공통 섹션 스타일 */
+.section {
+    width: 100%;
+    min-height: 100vh;
+    padding: 80px 0;
+    position: relative;
+}
+
+.section-content {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 20px;
+}
+
+/* 섹션별 스타일 */
+.main-section {
+    height: 100vh;
+    padding: 0;
+    opacity: 1;
+    transform: none;
+}
+
+.intro-section {
+    background: #f8f9fa;
+}
+
+.features-section {
+    background: #ffffff;
+}
+
+.tech-stack-section {
+    background: #f1f3f5;
+}
+
+.profile-section {
+    background: #ffffff;
+}
+
+/* 반응형 디자인 */
+@media (max-width: 768px) {
+    .section {
+        padding: 60px 0;
+    }
+
+    .section-content {
+        padding: 0 15px;
+    }
+}
+
+/* 애니메이션 효과 */
+.section:not(.main-section) {
+    opacity: 0;
+    transform: translateY(20px);
+    transition: all 0.8s ease;
+}
+
+.section.visible {
+    opacity: 1;
+    transform: translateY(0);
+}

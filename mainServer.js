@@ -17,6 +17,7 @@ const WebSocket = require('ws');
 const crypto = require('crypto');
 // 암호화 모듈
 const session = require('express-session');  // express-session 추가
+const axios = require('axios');  // axios 추가
 // require() 모듈 불러오기
 
 // Express 인스턴스 생성
@@ -32,8 +33,10 @@ const JWT_SECRET = 'your-secret-key';
 //서로 다른 출처(도메인, 프로토콜, 포트)에 있는
 // 웹 페이지나 서버가 서로의 자원에
 // 접근할 수 있도록 허용하는 보안 메커니즘
+// CORS 설정 추가
+
 app.use(cors({
-    origin: true,  // 모든 origin 허용
+    origin: true,  // 모든 origin 허��
     credentials: true, // 쿠키 포함 허용
     methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'], // 허용된 HTTP 메소드
     allowedHeaders: ['Content-Type', 'Accept', 'Authorization', 'Cookie', 'X-Requested-With'], // 허용된 헤더
@@ -105,7 +108,7 @@ const db = mysql.createConnection({
     port: 3306, // 데이터베이스 포트
     user: 'aluser1', // 데이터베이스 사용자
     password: 'alpassword2450!', // 데이터베이스 비밀번호
-    database: 'basicdb' // 데이터베이스 이름
+    database: 'basicdb' // ���이터베이스 이름
 });
 
 // 데이터베이스 연결
@@ -300,7 +303,7 @@ app.post('/api/logout', (req, res) => { // 엔드포인트 추가
     
     if (!token) {
         console.log('로그아웃 실패: 토큰 없음'); 
-        return res.status(401).json({ error: '로그인되어 있지 않습니다.' });
+        return res.status(401).json({ error: '로그인되어 있지 않���니다.' });
     }
 
     // 1. 유효한 세션 찾기
@@ -395,7 +398,7 @@ app.post('/api/posts', verifyToken, (req, res) => {
     db.query(query, [title, content, author, category, userId], (err, result) => {
         if (err) {
             console.error('게시글 작성 실패:', err);
-            return res.status(500).json({ error: '게시글 작성에 실패했습니다.' });
+            return res.status(500).json({ error: '게시글 작성에 실패했습니��.' });
         }
         res.json({ 
             id: result.insertId,
@@ -447,7 +450,7 @@ app.put('/api/posts/:id', verifyToken, (req, res) => {
 });
 
 // 게시글 삭제 (작성자 전용) api/posts/:id (api경로)
-// express()객체의 delete()메소드를 오버로딩? 인자값은 (path, middleware/선택(일종의 조건문같은 느낌), handler - 여기서는 callback 씀) 
+// express()객체의 delete()메소드를 오버로딩? ���자값은 (path, middleware/선택(일종의 조건문같은 느낌), handler - 여기서는 callback 씀) 
 app.delete('/api/posts/:id', verifyToken, (req, res) => {// 엔드포인트 추가
     // 미들웨어를 안쓰면 바로 callback 함수 호출
     // 미들웨어를 쓰면 미들웨어 호출 후 callback 함수 호출
@@ -460,7 +463,7 @@ app.delete('/api/posts/:id', verifyToken, (req, res) => {// 엔드포인트 추�
     // 클라이언트가 서버에 요청을 보낼 때, Express.js가 요청의 내용을 req 객체에 담아 서버로 전달
     // ex) delete 버튼을 누른 시점에 app이 가지고 있는 req[params, query, body, headers]에 요청의 내용이 담김
     // 클라이언트가 서버로 요청을 보낼 때 CORS 설정에 의해 허용된 출처가 아니면 요청 자체가 차단됨
-    // ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'] 메소드 중 하나로 요청이 와야 서버가 응답함
+    // ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'] 메소드 중 하나로 요청이 ��야 서버가 응답함
     // (req, res) => {} 는 req객체정보를 이용해서 작업을 수행하고 callback 함수이기에 작업 결과를 res 객체에 담아 응답
     // 결국 delete 메서드는 req를 가지고 null인 res를 데이터를 가진 객체로 반환하는 메서드
     // res는 작업이 아닌 작업결과를 응답하는 객체
@@ -475,7 +478,7 @@ app.delete('/api/posts/:id', verifyToken, (req, res) => {// 엔드포인트 추�
     // 수정할때도 마찬가지로 수정한 값을 DB에 저장하고
     // 수정 값은 JSON 형태로 웹 내에서 보관
     // 그러면 게시판 조회 시 쿼리를 안보내고 JSON 형태로 조회만 하면 됨
-    // 결론은 삽입, 수정 시에만 DB에 저장하고 조회, 삭제는 웹 내에서 처리
+    // 결론은 삽입, 수정 시에만 DB에 저장하고 조회, 삭제는 웹 ��에서 처리
     // 그런데 사용량이 많아야 쿼리 줄이는 것이 의미가 있을 듯
     // 사용량이 적어서 웹 내에서 처리하는 게 낫지만, 이미 만든거 굳이 바꿀 필요는 없음
 
@@ -558,6 +561,25 @@ app.get('/api/test', (req, res) => {
     console.log('쿼리1:', query1);
     console.log('쿼리2:', query2);
 });
+//============================================================//
+// 회원가입 username 중복확인
+app.get('/api/users/check-username', (req, res) => {  // POST → GET으로 변경, URL 파라미터 제거
+    const username = req.query.username;  // query parameter로 받기
+    console.log('username 중복확인 요청:', username);
+
+    const query = 'SELECT * FROM users WHERE username = ?';
+    db.query(query, [username], (err, result) => {
+        if(err){
+            console.error('username 중복확인 실패:', err);
+            return res.status(500).json({ error: '서버 오류가 발생했습니다.' });
+        }
+        if(result.length > 0){
+            return res.status(400).json({ error: '이미 사용 중인 아이디입니다.' });
+        }
+        res.json({ isAvailable: true });
+    });
+});
+//============================================================//
 //============================================================//
 // 게시글 상세 조회
 app.get('/api/posts/:id', (req, res) => {// 엔드포인트 // 조회는 권한이 필요 없기에 조건(미들웨어) 없음
@@ -750,15 +772,182 @@ wss.on('error', function(error) {
 
 console.log('WebSocket 서버가 8081 포트에서 실행 중입니다.');
 
-// CORS 설정 추가
-app.use(cors({
-    origin: '*',  // 모든 origin 허용 (개발 환경)
-    methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
-    allowedHeaders: ['Content-Type', 'Authorization']
-}));
+
+
+// SMS 관련 설정
+const coolsms = require('coolsms-node-sdk').default;
+const messageService = new coolsms('NCS1IDLQ1RWDURVH', 'X1PBIBN03QJO531HIUGGREON2LWIB5VD');
+const SPRING_SERVER = 'http://183.105.171.41:8083';
+
+// 인증번호 저장을 위한 임시 저장소
+const otpStore = new Map();  // { phoneNumber: { code: string, expireTime: Date } }
+
+// SMS 발송 요청 처리
+app.post('/api/send-sms', async (req, res) => {
+  try {
+    const { phoneNumber } = req.body;
+    const verificationCode = Math.floor(100000 + Math.random() * 900000);
+
+    console.log('SMS 발송 시도:', { phoneNumber, verificationCode });
+
+    // coolsms로 SMS 발송
+    const result = await messageService.sendOne({
+      to: phoneNumber,
+      from: '010-6587-7718',
+      text: `인증번호는 [${verificationCode}] 입니다.`
+    });
+
+    console.log('Coolsms 응답:', result);
+
+    if (result.statusCode === '2000') {
+      // 인증번호 저장
+      otpStore.set(phoneNumber, {
+        code: verificationCode.toString(),
+        expireTime: new Date(Date.now() + 5 * 60000)  // 5분 후 만료
+      });
+
+      res.json({ 
+        success: true, 
+        message: 'SMS sent successfully',
+        code: verificationCode
+      });
+    } else {
+      throw new Error('SMS 발송 실패');
+    }
+  } catch (error) {
+    console.error('SMS 발송 오류:', error);
+    res.status(500).json({ 
+      success: false, 
+      error: error.message || '인증번호 발송에 실패했습니다.' 
+    });
+  }
+});
+
+// 인증번호 확인
+app.post('/api/verify-otp', (req, res) => {
+  try {
+    const { phoneNumber, otp } = req.body;
+    console.log('인증번호 확인 요청:', { phoneNumber, otp });
+
+    const storedData = otpStore.get(phoneNumber);
+    if (!storedData) {
+      return res.json({ 
+        success: false, 
+        message: '인증번호를 먼저 요청해주세요.' 
+      });
+    }
+
+    if (new Date() > storedData.expireTime) {
+      otpStore.delete(phoneNumber);
+      return res.json({ 
+        success: false, 
+        message: '인증번호가 만료되었습니다.' 
+      });
+    }
+
+    if (storedData.code === otp) {
+      otpStore.delete(phoneNumber);  // 사용한 인증번호 삭제
+      return res.json({ 
+        success: true, 
+        message: '인증이 완료되었습니다.' 
+      });
+    }
+
+    res.json({ 
+      success: false, 
+      message: '인증번호가 일치하지 않습니다.' 
+    });
+  } catch (error) {
+    console.error('인증번호 확인 오류:', error);
+    res.status(500).json({ 
+      success: false, 
+      error: '인증번호 확인에 실패했습니다.' 
+    });
+  }
+});
+
+// 회원가입 처리
+app.post('/api/signup', async (req, res) => {
+  try {
+    const { 
+      username, 
+      password, 
+      name, 
+      email, 
+      phone 
+    } = req.body;
+
+    // 필수 필드 검증
+    if (!username || !password || !name || !email || !phone) {
+      return res.status(400).json({ 
+        success: false, 
+        error: '모든 필수 항목을 입력해주세요.' 
+      });
+    }
+
+    // 아이디 중복 확인
+    const checkQuery = 'SELECT * FROM users WHERE username = ?';
+    db.query(checkQuery, [username], (err, results) => {
+      if (err) {
+        console.error('사용자 조회 실패:', err);
+        return res.status(500).json({ error: '서버 오류가 발생했습니다.' });
+      }
+
+      if (results.length > 0) {
+        return res.status(400).json({ error: '이미 사용 중인 아이디입니다.' });
+      }
+
+      // 새 사용자 추가
+      const insertQuery = `
+        INSERT INTO users (
+          username, 
+          password, 
+          name, 
+          email, 
+          phone,
+          role_id,
+          status,
+          created_at
+        ) VALUES (?, ?, ?, ?, ?, ?, 'active', NOW())
+      `;
+
+      db.query(
+        insertQuery, 
+        [
+          username, 
+          password, 
+          name, 
+          email, 
+          phone,
+          2  // 일반 사용자 role_id (관리자는 1)
+        ],
+        (err, result) => {
+          if (err) {
+            console.error('회원가입 실패:', err);
+            return res.status(500).json({ error: '회원가입에 실패했습니다.' });
+          }
+
+          console.log('회원가입 성공:', { username, name });
+          res.json({ 
+            success: true, 
+            message: '회원가입이 완료되었습니다.',
+            userId: result.insertId 
+          });
+        }
+      );
+    });
+  } catch (error) {
+    console.error('회원가입 처리 중 오류:', error);
+    res.status(500).json({ 
+      success: false, 
+      error: '회원가입 처리 중 오류가 발생했습니다.' 
+    });
+  }
+});
 
 // 서버 시작
 const PORT = 8080;
 app.listen(PORT, '0.0.0.0', () => {
     console.log(`서버가 포트 ${PORT}에서 실행 중입니다.`);
 });
+

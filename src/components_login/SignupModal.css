@@ -1,5 +1,5 @@
 /* 모달 오버레이 */
-.modal-overlay {
+.signup-modal-overlay {
     position: fixed;
     top: 0;
     left: 0;
@@ -8,21 +8,63 @@
     background-color: rgba(0, 0, 0, 0.5);
     display: flex;
     justify-content: center;
-    align-items: center;
+    align-items: flex-start;
+    padding-top: 15vh;
     z-index: 1000;
+    min-height: 100vh;
+    overflow-y: auto;
 }
 
 /* 모달 컨테이너 */
-.modal-content {
+.signup-modal-content {
     background: white;
     padding: 20px;
     border-radius: 8px;
     width: 90%;
     max-width: 400px;
+    height: auto;
     max-height: 80vh;
     overflow-y: auto;
     position: relative;
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    margin-bottom: 20px;
+}
+
+/* 모바일 대응 */
+@media (max-width: 768px) {
+    .signup-modal-overlay {
+        align-items: flex-start;
+        padding-top: 20vh;
+    }
+
+    .signup-modal-content {
+        transform: none;
+        margin: 0;
+        width: 90%;
+        max-height: 70vh;
+    }
+}
+
+/* 모바일 대응 */
+@media (max-width: 480px) {
+    .signup-modal-overlay {
+        align-items: flex-start;
+        padding-top: 10vh;
+    }
+
+    .signup-modal-content {
+        transform: none;
+        margin: 0;
+        width: 90%;
+        max-height: 70vh;
+    }
+}
+
+/* 모달 내용 */
+.modal-body {
+    max-height: calc(80vh - 60px);
+    overflow-y: auto;
+    padding-right: 10px;
 }
 
 /* 모달 헤더 */
@@ -144,3 +186,4 @@
 .modal-content::-webkit-scrollbar-thumb:hover {
     background: #555;
 }
+

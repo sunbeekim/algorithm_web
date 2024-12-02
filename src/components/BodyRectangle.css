@@ -1,11 +1,12 @@
 .body-container {
-    width: 100%;
-    height: calc(100vh - 80px);
+    max-width: 100%;
+    margin-top: -60px;
     position: relative;
     overflow: hidden;
     opacity: 0;
     transform: translateY(20px);
     transition: all 1s ease;
+    background-color: rgb(255, 255, 255);
 }
 
 .body-container.loaded {
@@ -37,29 +38,20 @@
     top: 0;
     left: 0;
     width: 100%;
-    height: 100%;
+    height: 120%;
     background: linear-gradient(
         to bottom,
-        rgba(0, 0, 0, 0.2),
-        rgba(0, 0, 0, 0.5)
+        rgba(0, 0, 0, 0.2) 0%,
+        rgba(0, 0, 0, 0.5) 70%,
+        rgba(0, 0, 0, 0.9) 100%
     );
 }
 
-.body-content {
-    position: relative;
-    width: 100%;
-    height: 100%;
-    display: flex;
-    flex-direction: column;
-    justify-content: flex-end;
-    padding: 60px;
-    color: white;
-    z-index: 1;
-}
+
 
 .content-inner {
     max-width: 800px;
-    margin-bottom: 120px;
+    margin-bottom: 70%;
 }
 
 .content-inner h1 {
@@ -70,6 +62,7 @@
     opacity: 0;
     transform: translateY(20px);
     animation: fadeInUp 1s ease forwards 0.5s;
+    color: #ffffff;
 }
 
 .content-inner h2 {
@@ -85,7 +78,7 @@
 /* 스크롤 인디케이터 스타일 */
 .scroll-indicator {
     position: absolute;
-    bottom: 5px;
+    bottom: 30%;
     left: 50%;
     transform: translateX(-50%);
     display: flex;
@@ -159,7 +152,7 @@
     }
 
     .content-inner {
-        margin-bottom: 100px;
+        margin-bottom: 70%;
     }
 
     .content-inner h1 {
@@ -172,5 +165,25 @@
 
     .scroll-indicator {
         bottom: 0px;
+    }
+    .scroll-indicator {
+        position: absolute;
+        bottom: 30%;
+        left: 50%;
+        transform: translateX(-50%);
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        opacity: 0;
+        animation: fadeIn 1s ease forwards 1.2s;
+    }
+    .body-container {        
+        margin-top: -21%;        
+    }
+}
+
+@media (max-width: 480px) {
+    .body-container {
+        margin-top: -32%;
     }
 }

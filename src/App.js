@@ -8,7 +8,7 @@ import Board from './pages/Board';
 import Coding from './pages/Coding';  
 import Ranking from './pages/Ranking';
 import Paint from './pages/Paint';
-import './App.css';
+
 import { AuthProvider } from './context/AuthContext';
 import Algorithm from './pages/Algorithm';
 import Bottom from './components/Bottom';
@@ -75,8 +75,10 @@ function App() {
         <div id="modal-root"></div>
        
       </div>
+      <div className="bottom-container">
       
       <Bottom />
+      </div>
     </AuthProvider>
   );
 }
