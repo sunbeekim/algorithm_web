@@ -1,3 +1,5 @@
+/* Header.css */ 
+/* // src/components/Header.css */
 /* 1. 공통 변수 */
 :root {
     --header-height: 65px;
@@ -286,6 +288,104 @@
 /* 툴팁은 그대로 표시 */
 .header .header-content .desktop-menu .logtext .tooltip {
     display: block;
+}
+
+/* 매우 작은 화면 대응 (480px 이하) */
+@media (max-width: 480px) {
+    :root {
+        height: var(--header-height);
+        margin: 0;
+        padding: 0;
+        z-index: 1500;  /* z-index 조정 */
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+    }
+
+    .header {
+        height: var(--header-height);
+        margin: 0;
+        padding: 0;
+        z-index: 1500;  /* z-index 조정 */
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+    }
+
+    .header-content {
+        padding: 0 10px;
+    }
+
+    /* 홈 버튼 크기 조정 */
+    .home-button {
+        margin-right: 10px;
+        transform: scale(0.9);
+    }
+
+    /* 모바일 메뉴 위치 조정 */
+    .mobile-menu {
+        top: 50%;
+        transform: translate(-50%, -50%) scale(0.9);
+    }
+
+    /* 드롭다운 토글 버튼 크기 조정 */
+    .dropdown-toggle {
+        font-size: 1.5rem;
+        padding: 6px;
+    }
+
+    /* 링크 스타일 조정 */
+    .header-link {
+        padding: 6px 10px;
+        font-size: 0.9rem;
+    }
+
+    /* 모바일 드롭다운 메뉴 조정 */
+    .mobile-dropdown {
+        top: var(--header-height);
+    }
+
+    /* 로그인/로그아웃 버튼 크기 조정 */
+    .logright {
+        transform: scale(0.9);
+    }
+
+    /* 아이콘 크기 조정 */
+    .icon {
+        transform: scale(0.9);
+    }
+}
+
+/* 매우 매우 작은 화면 대응 (360px 이하) */
+@media (max-width: 360px) {
+    :root {
+        --header-height: 50px;  /* 더 작은 헤더 높이 */
+    }
+
+    .header-content {
+        padding: 0 5px;
+    }
+
+    .home-button {
+        margin-right: 5px;
+        transform: scale(0.8);
+    }
+
+    .mobile-menu {
+        transform: translate(-50%, -50%) scale(0.8);
+    }
+
+    .dropdown-toggle {
+        font-size: 1.3rem;
+        padding: 4px;
+    }
+
+    .header-link {
+        padding: 4px 8px;
+        font-size: 0.8rem;
+    }
 }
 
 

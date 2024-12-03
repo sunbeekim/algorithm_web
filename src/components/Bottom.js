@@ -24,6 +24,8 @@ function Bottom() {
                         <li><Link to="/board">게시판</Link></li>
                         <li><Link to="/coding">코딩</Link></li>
                         <li><Link to="/algorithm">알고리즘</Link></li>
+                        <li><Link to="/chatroom/:chatroomId">그림판채팅</Link></li>
+                        <li><Link to="/ranking">랭킹</Link></li>
                     </ul>
                 </div>
 

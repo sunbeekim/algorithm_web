@@ -1,40 +1,80 @@
 /* 페인트 페이지 스타일 */
 /* src/pages/Paint.css */
-.paint-container {
+.paint-page {
+    min-height: 100vh;
+    padding: 10px;
     display: flex;
-    flex-direction: row;
-    gap: 20px;
-    padding: 20px;
-    height: calc(100vh - 65px);
-    width: 100%;
+    flex-direction: column;
+    align-items: center;
 }
 
+.paint-container {
+    width: 90%;
+    max-width: 1200px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 20px;
+    padding-right: 10%;
+}
+
+/* 캔버스 컨테이너 스타일 */
 .canvases-container {
-    flex: 1;
+    width: 100%;
     display: flex;
     flex-direction: column;
     gap: 20px;
+    align-items: center;
+    padding-right: 10%;
+    margin: 50px -10% 0 0%;
+    flex: 1;
     overflow-y: auto;
 }
 
+.canvas-container {
+    width: 100%;
+    max-width: 800px;
+    min-width: 280px;
+    aspect-ratio: 3/4;
+    position: relative;
+    margin: 50px 0px 0 0%;
+    overflow: visible;
+}
+
+.canvas {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100% !important;
+    height: 100% !important;
+    border: 1px solid #ccc;
+    touch-action: none;
+    overflow: hidden;
+}
+
+/* 툴바 기본 스타일 */
 .tools {
-    width: 80px;
+    width: 40px;
     display: flex;
     flex-direction: column;
-    gap: 15px;
-    padding: 15px;
+    gap: 10px;
+    padding: 10px;
     background: rgba(255, 255, 255, 0.9);
     border-radius: 10px;
     box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-    position: sticky;
-    top: 20px;
+    position: fixed;
+    right: 10px;
+    top: 100px;
     height: fit-content;
+    z-index: 1000;
+    align-items: center;
 }
 
+/* 툴바 버튼 스타일 */
 .tools button {
-    width: 50px;
-    height: 50px;
-    padding: 10px;
+    width: 40px;
+    height: 40px;
+    padding: 8px;
     border: none;
     border-radius: 8px;
     background: #f0f0f0;
@@ -44,8 +84,88 @@
     align-items: center;
     justify-content: center;
     position: relative;
+    color: #0891b2;  /* 기본 아이콘 색상 */
 }
 
+/* 각 버튼별 스타일 */
+.tools .eraser-button {
+    background: #e0f2fe;  /* 연한 하늘색 배경 */
+    color: #0284c7;
+}
+
+.tools .eraser-button.active {
+    background: #0284c7;  /* 활성화시 진한 하늘색 */
+    color: white;
+}
+
+.tools .clear-button {
+    background: #fee2e2;  /* 연한 빨간색 배경 */
+    color: #ef4444;
+}
+
+.tools .delete-button {
+    background: #fef2f2;  /* 연한 분홍색 배경 */
+    color: #dc2626;
+}
+
+.tools .add-canvas-button {
+    background: #dcfce7;  /* 연한 초록색 배경 */
+    color: #16a34a;
+}
+
+/* 호버 효과 */
+.tools button:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.tools .eraser-button:hover {
+    background: #bae6fd;
+}
+
+.tools .clear-button:hover {
+    background: #fecaca;
+}
+
+.tools .delete-button:hover {
+    background: #fee2e2;
+}
+
+.tools .add-canvas-button:hover {
+    background: #bbf7d0;
+}
+
+/* 활성 상태 */
+.tools button:active {
+    transform: translateY(1px);
+    box-shadow: none;
+}
+
+/* 툴바 컨트롤 스타일 */
+.tools .color-picker,
+.tools .brush-size {
+    width: 30px;
+    margin: 5px 0;
+}
+
+.color-picker {
+    height: 30px;
+    padding: 0;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.brush-size {
+    height: 150px;
+    writing-mode: bt-lr;
+    -webkit-appearance: slider-vertical;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+/* 툴팁 스타일 */
 .tools button::after {
     content: attr(title);
     position: absolute;
@@ -68,276 +188,297 @@
     visibility: visible;
 }
 
-.tools button:hover {
-    background: #e0e0e0;
-    transform: translateY(-2px);
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-}
-
-.button-icon {
-    font-size: 1.5rem;
-}
-
-.button-text {
-    display: none;
-}
-
-.tools .color-picker,
-.tools .brush-size {
-    width: 100%;
-    margin: 5px 0;
-}
-
-.color-picker {
-    width: 3vh;
-    min-width: 3vh;
-    height: 4vh;
-    padding: 0;
-    border: none;
-    border-radius: 50%;
-    cursor: pointer;
-    transition: all 0.3s ease;
-}
-
-.color-picker:disabled {
-    opacity: 0.5;
-    cursor: not-allowed;
-}
-
-.brush-size {
-    width: 150px;
-    min-width: 3vh;
-    height: 40px;
-    cursor: pointer;
-    transition: all 0.3s ease;
-}
-
-.clear-button, .eraser-button, .delete-button, .add-canvas-button {
-    padding: 12px 24px;
-    font-size: 12px;
-    height: 50px;
-    min-width: 3vh;
-    color: white;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-    transition: all 0.3s ease;
-    font-weight: 1vm;
-}
-
-.clear-button {
-    background-color: #ff4444;
-    color: #dc2626;
-}
-
-.clear-button:hover {
-    background-color: #ff0000;
-}
-
-.eraser-button {
-    background-color: #4CAF50;
-    color: #2563eb;
-}
-
-.eraser-button:hover {
-    background-color: #45a049;
-}
-
-.eraser-button.active {
-    background-color: #bfdbfe;
-    color: #1e40af;
-}
-
-.delete-button {
-    background-color: #f44336;
-    color: #7c3aed;
-}
-
-.delete-button:hover {
-    background-color: #da190b;
-}
-
-.add-canvas-button {
-    background-color: #2196F3;
-    color: #059669;
-}
-
-.add-canvas-button:hover {
-    background-color: #1976D2;
-}
-
-.canvas-container {
-    width: 100%;
-    max-width: 800px;
-    aspect-ratio: 3/4;
-    position: relative;
-    margin: 0 auto;
-    overflow: hidden;
-}
-
-.canvas {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100% !important;
-    height: 100% !important;
-    border: 1px solid #ccc;
-    touch-action: none;
-}
-
-/* 미디어 쿼리 수정 */
-@media (max-width: 768px) {
-    .canvas-container {
-        width: 100%;
-        max-width: none;
-    }
-}
-
-.color-range-container {
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    gap: 10px;
-}
-
-/* 모바일 대응 */
-@media (max-width: 768px) {
-    .color-range-container {
-        gap: 5px;
-    }
-}
-
-.button-text {
-    display: inline;
-}
-
-.button-icon {
-    display: none;
-}
-
-/* 모바일 크기에서는 아이콘만 표시 */
-@media (max-width: 768px) {
-    .button-text {
-        display: none; /* 텍스트 숨기기 */
-    }
-
-    .button-icon {
-        display: inline; /* 아이콘 표시 */
-        font-size: 1.5em;
-    }
-
-    .clear-button, .eraser-button, .delete-button, .add-canvas-button {
-        padding: 8px;
-        height: 40px;
-        min-width: 40px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-    }
-
-    .tools {
-        gap: 8px;
-    }
-
-    .color-picker {
-        width: 35px;
-        height: 35px;
-    }
-
-    .brush-size {
-        width: 80px;
-    }
-}
-
-.canvases-container {
-    flex: 1;
-    display: flex;
-    flex-direction: column;
-    gap: 20px;
-    align-items: flex-start;
-    overflow-y: auto;
-}
-
-/* 모바일 환경 대응 */
+/* 모바일 대응 스타일 */
 @media (max-width: 768px) {
     .paint-container {
+        margin: 50px 0px 0 0%;
         height: calc(100vh - 80px);
-        overflow-y: auto;
+        overflow: hidden;
     }
 
     .canvases-container {
-        min-height: calc(100vh - 200px);
-        overflow-y: visible;
-    }
-
-    body {
+        height: calc(100vh - 200px);
         overflow-y: auto;
         -webkit-overflow-scrolling: touch;
+        touch-action: pan-y pinch-zoom;
     }
-}
 
-/* 반응형 디자인 */
-@media (max-width: 768px) {
-    .paint-container {
-        flex-direction: column-reverse;
+    .canvas-container {
+        min-width: 150px;
+        margin: 30px 0px 0 5%;
+        padding: 0 5% 0 5%;
+        transform-origin: center;
+        touch-action: pan-y pinch-zoom;
     }
 
     .tools {
-        width: 100%;
-        position: static;
         flex-direction: row;
-        flex-wrap: wrap;
+        position: fixed;
+        bottom: 0;
+        top: auto;
+        left: 0;
+        right: 0;
+        width: 100%;
         justify-content: center;
+        padding: 5px;
+        background: rgba(255, 255, 255, 0.95);
+        border-radius: 10px 10px 0 0;
     }
 
-    .tools button {
-        flex: 1;
-        min-width: 120px;
+    .brush-size {
+        height: 35px;
+        writing-mode: bt-lr;
+        -webkit-appearance: default;
     }
-}
 
-/* 각 버튼별 스타일 */
-.eraser-button {
-    color: #2563eb; /* 파란색 */
-}
-
-.clear-button {
-    color: #dc2626; /* 빨간색 */
-}
-
-.delete-button {
-    color: #7c3aed; /* 보라색 */
-}
-
-.add-canvas-button {
-    color: #059669; /* 초록색 */
-}
-
-/* 버튼 호버 효과 */
-.tools button:hover {
-    background: #e0e0e0;
-    transform: translateY(-2px);
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-}
-
-/* 아이콘 크기 조정 */
-.tools button svg {
-    font-size: 1.5rem;
-    transition: all 0.3s ease;
-}
-
-/* 지우개 모드 활성화 시 스타일 */
-.eraser-button.active {
-    background: #bfdbfe; /* 연한 파란색 배경 */
-    color: #1e40af; /* 진한 파란색 */
-}
-
-/* 모바일 환경에서 툴팁 위치 조정 */
-@media (max-width: 768px) {
     .tools button::after {
         left: 50%;
         top: -30px;
         transform: translateX(-50%);
+    }
+}
+
+/* 매우 작은 화면 대응 */
+@media (max-width: 480px) {
+    .tools {
+        padding: 3px;
+        gap: 20px;
+    }
+
+    .tools button {
+        width: 40px;
+        height: 28px;
+        padding: 3px;
+    }
+
+    .canvas-container {
+        min-width: 200px;
+        margin: 30px 0px 0 5%;
+        padding: 0 10% 0 10%;
+    }
+}
+
+/* 터치 디바이스 스타일 */
+.touch-device {
+    -webkit-overflow-scrolling: touch;
+    overflow-y: auto;
+    height: calc(100vh - 120px);
+}
+
+.touch-device .canvases-container {
+    padding-bottom: 150px;
+}
+
+/* iOS 디바이스 스타일 */
+@supports (-webkit-touch-callout: none) {
+    .touch-device {
+        overflow-y: scroll;
+        -webkit-overflow-scrolling: touch;
+        touch-action: pan-y pinch-zoom;
+    }
+
+    .touch-device .canvas-container {
+        width: 85%;
+        margin: 30px auto;
+        touch-action: pan-y pinch-zoom;
+    }
+
+    .touch-device .tools {
+        bottom: env(safe-area-inset-bottom);
+    }
+}
+
+.chat-tools {
+    width: auto;
+    height: 40px;
+    display: flex;
+    flex-direction: row;
+    gap: 10px;
+    padding: 10px;
+    background: rgba(255, 255, 255, 0.9);
+    border-radius: 10px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    position: fixed;
+    left: 50%;
+    transform: translateX(-50%);
+    top: 8.5vh;
+    z-index: 2000;
+}
+
+.chat-tools .chat-name {
+    width: auto;
+    height: 40px;
+    padding: 0 10px;
+    border-radius: 8px;
+    border: 1px solid #ddd;
+}
+
+.chat-tools button {
+    width: 50px;
+    height: 40px;
+    padding: 8px;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+}
+
+/* Chat In/Out 버튼 */
+.chat-tools .chat-button {
+    background: #e0f2fe;  /* 연한 하늘색 배경 */
+    color: #0284c7;
+}
+
+.chat-tools .chat-button.active {
+    background: #0284c7;  /* 활성화시 진한 하늘색 */
+    color: white;
+}
+
+/* Add 버튼 */
+.chat-tools .chat-add-button {
+    background: #dcfce7;  /* 연한 초록색 배경 */
+    color: #16a34a;
+}
+
+/* Delete 버튼 */
+.chat-tools .chat-delete-button {
+    background: #fee2e2;  /* 연한 빨간색 배경 */
+    color: #ef4444;
+}
+
+/* 채팅방 선택 드롭다운 */
+.chat-tools .chat-name {
+    border: 1px solid #e2e8f0;
+    background: #f8fafc;
+    color: #0f172a;
+}
+
+/* 호버 효과 */
+.chat-tools button:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.chat-tools .chat-button:hover {
+    background: #bae6fd;
+}
+
+.chat-tools .chat-add-button:hover {
+    background: #bbf7d0;
+}
+
+.chat-tools .chat-delete-button:hover {
+    background: #fecaca;
+}
+
+/* 활성 상태 */
+.chat-tools button:active {
+    transform: translateY(1px);
+    box-shadow: none;
+}
+
+/* 비활성화 상태 */
+.chat-tools button:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+    transform: none;
+}
+
+/* 모바일 대응 */
+@media (max-width: 768px) {
+    .chat-tools {
+        top: 13%;
+        width: auto;
+        height: 35px;
+        padding: 5px;
+        gap: 10px;
+    }
+
+    .chat-tools button {
+        width: 35px;
+        height: 35px;
+        padding: 5px;
+    }
+
+    .chat-tools .chat-name {
+        width: 80px;
+        height: 35px;
+        font-size: 14px;
+    }
+}
+
+/* 매우 작은 화면 대응 */
+@media (max-width: 480px) {
+    .chat-tools {
+        top: 17%;
+        width: auto;
+        height: 30px;
+        padding: 3px;
+        gap: 10px;
+        z-index: 5000;
+    }
+
+    .chat-tools button {
+        width: 30px;
+        height: 30px;
+        padding: 3px;
+    }
+
+    .chat-tools .chat-name {
+        width: 70px;
+        height: 30px;
+        font-size: 12px;
+    }
+}
+
+/* Chat tools 검색 필드 스타일 */
+.chat-tools .search-field {
+    width: 120px;
+    height: 40px;
+    padding: 0 10px;
+    border-radius: 8px;
+    border: 1px solid #e2e8f0;
+    background: #f8fafc;
+    color: #0f172a;
+    font-size: 14px;
+    transition: all 0.3s ease;
+}
+
+.chat-tools .search-field:focus {
+    outline: none;
+    border-color: #0284c7;
+    box-shadow: 0 0 0 2px rgba(2, 132, 199, 0.2);
+}
+
+/* 검색 버튼 */
+.chat-tools .search-button {
+    background: #dbeafe;  /* 연한 파란색 배경 */
+    color: #2563eb;
+}
+
+.chat-tools .search-button:hover {
+    background: #bfdbfe;
+}
+
+/* 모바일 대응 */
+@media (max-width: 768px) {
+    .chat-tools .search-field {
+        width: 80px;
+        height: 35px;
+        font-size: 14px;
+    }
+}
+
+/* 매우 작은 화면 대응 */
+@media (max-width: 480px) {
+    .chat-tools .search-field {
+        width: 60px;
+        height: 30px;
+        font-size: 12px;
+        padding: 0 5px;
     }
 }

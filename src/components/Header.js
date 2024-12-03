@@ -29,7 +29,7 @@ const MENU_ITEMS = [
     { path: '/board', name: '게시판', icon: <CiKeyboard /> },
     { path: '/coding', name: '코딩', icon: <BiCodeAlt /> },
     { path: '/algorithm', name: '알고리즘', icon: <SiThealgorithms /> },
-    { path: '/paint', name: '그림판', icon: <BsFillPencilFill /> },
+    { path: '/chatroom/:chatroomId', name: '그림판채팅', icon: <BsFillPencilFill /> },
     { path: '/ranking', name: '랭킹', icon: <FaChartBar /> }
 ];
 

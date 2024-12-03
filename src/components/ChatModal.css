@@ -1,0 +1,115 @@
+/* ChatModal.css */ 
+/* // src/components/ChatModal.css */
+.chat-modal {
+    position: fixed;
+    bottom: 10%;
+    right: 20px;
+    width: 95%;
+    height: 250px;
+    background-color: rgba(255, 255, 255, 0.8);
+    backdrop-filter: blur(10px);
+    border-radius: 10px 10px 0 0;
+    box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.1);
+    display: flex;
+    flex-direction: column;
+    z-index: 1000;
+    pointer-events: none;
+}
+
+.chat-header {
+    padding: 15px;
+    background-color: rgba(29, 154, 188, 0.9);
+    color: white;
+    border-radius: 10px 10px 0 0;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    backdrop-filter: blur(5px);
+    pointer-events: auto;
+}
+
+.chat-header h3 {
+    margin: 0;
+    font-size: 16px;
+}
+
+.close-button {
+    background: none;
+    border: none;
+    color: white;
+    font-size: 20px;
+    cursor: pointer;
+    padding: 0 5px;
+}
+
+.chat-history {
+    flex: 1;
+    padding: 15px;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    pointer-events: auto;
+}
+
+.chat-message {
+    max-width: 70%;
+    padding: 8px 12px;
+    border-radius: 15px;
+    margin: 2px 0;
+}
+
+.chat-message.sent {
+    align-self: flex-end;
+    background-color: rgba(29, 154, 188, 0.9);
+    color: white;
+}
+
+.chat-message.received {
+    align-self: flex-start;
+    background-color: rgba(240, 240, 240, 0.8);
+    color: black;
+}
+
+.message-content {
+    margin-bottom: 4px;
+    word-break: break-word;
+}
+
+.message-timestamp {
+    font-size: 10px;
+    opacity: 0.7;
+    text-align: right;
+}
+
+.chat-input-form {
+    padding: 15px;
+    display: flex;
+    gap: 10px;
+    border-top: 1px solid rgba(238, 238, 238, 0.5);
+    background-color: rgba(255, 255, 255, 0.9);
+    pointer-events: auto;
+}
+
+.chat-input-form input {
+    flex: 1;
+    padding: 8px 12px;
+    border: 1px solid rgba(221, 221, 221, 0.8);
+    border-radius: 20px;
+    outline: none;
+    background-color: rgba(255, 255, 255, 0.9);
+}
+
+.chat-input-form button {
+    padding: 8px 20px;
+    background-color: rgba(29, 154, 188, 0.9);
+    color: white;
+    border: none;
+    border-radius: 20px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.chat-input-form button:hover {
+    background-color: rgba(22, 122, 150, 0.9);
+} 

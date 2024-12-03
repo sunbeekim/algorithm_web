@@ -16,6 +16,8 @@ import Layout from './components/Layout';
 import VerticalContent from './components/VerticalContent';
 import { FaArrowUp } from 'react-icons/fa';
 import Admin from './pages/Admin';
+import ChatRoom from './pages/ChatRoom';
+import PrivateRoute from './components/PrivateRoute';
 
 function App() {
   const [showButton, setShowButton] = useState(false);
@@ -68,9 +70,16 @@ function App() {
             <Route path="/coding" element={<Coding />} />
             <Route path="/algorithm" element={<Algorithm />} />
             <Route path="/ranking" element={<Ranking />} />
-            <Route path="/paint" element={<Paint />} />
+            {/* <Route path="/paint" element={<Paint />} /> */}
+            <Route path="/chatroom/:chatroomId" element={
+                    <PrivateRoute>
+                        <ChatRoom />
+                    </PrivateRoute>
+                } />
             <Route path="/admin" element={<Admin />} />
             <Route path="*" element={<Navigate to="/" replace />} />
+            {/* 채팅방 라우트 추가 */}
+            
           </Routes>
         </div>
         

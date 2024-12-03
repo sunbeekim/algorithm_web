@@ -13,6 +13,7 @@ const cookieParser = require('cookie-parser');
 const jwt = require('jsonwebtoken');
 // JWT 모듈
 const WebSocket = require('ws');
+const http = require('http');
 // WebSocket 모듈
 const crypto = require('crypto');
 // 암호화 모듈
@@ -23,40 +24,40 @@ const axios = require('axios');  // axios 추가
 // Express 인스턴스 생성
 const app = express();
 
+const server = http.createServer(app);
 // JWT 시크릿 키(인증키)
 const JWT_SECRET = 'your-secret-key';
 
-// CORS 설정을 가장 먼저 적용
-// 모든 출처 허용
-//(교차 출처 리소스 공유)의 약자로,
-// 추가 HTTP 헤더를 사용하여 
-//서로 다른 출처(도메인, 프로토콜, 포트)에 있는
-// 웹 페이지나 서버가 서로의 자원에
-// 접근할 수 있도록 허용하는 보안 메커니즘
-// CORS 설정 추가
+// CORS 설정을 더 상세하게 지정
+const corsOptions = {
+    origin: ['http://183.105.171.41:3000', 'http://localhost:3000'],
+    methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+    allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With', 'Accept'],
+    credentials: true,
+    maxAge: 86400 // CORS 프리플라이트 요청 캐시 시간 (24시간)
+};
 
-app.use(cors({
-    origin: true,  // 모든 origin 허
-    credentials: true, // 쿠키 포함 허용
-    methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'], // 허용된 HTTP 메소드
-    allowedHeaders: ['Content-Type', 'Accept', 'Authorization', 'Cookie', 'X-Requested-With'], // 허용된 헤더
-    optionsSuccessStatus: 200 // 옵션 요청 성공 상태 코드
-}));
+// CORS 미들웨어 적용
+app.use(cors(corsOptions));
 
-// WebSocket upgrade 요청 처리를 위한 미들웨어
-// 변동사항을 추적하기 위해 사용
-app.use((req, res, next) => { // 미들웨어 추가
-    if (req.headers['upgrade'] !== undefined) { // 업그레이드 요청 확인
-        res.end(); // 업그레이드 요청 처리
-        return;
+// 모든 라우트에 대해 CORS 헤더 추가
+app.use((req, res, next) => {
+    res.header('Access-Control-Allow-Origin', 'http://183.105.171.41:3000');
+    res.header('Access-Control-Allow-Credentials', 'true');
+    res.header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
+    res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept, Authorization');
+    
+    // OPTIONS 요청에 대한 처리
+    if (req.method === 'OPTIONS') {
+        return res.status(200).end();
     }
-    next(); // 다음 미들웨어 호출
+    
+    next();
 });
 
-// 기본 미들웨어
-// app 객체(express 인스턴스)에 미들웨어 추가
-// 요청 본문을 JSON으로 파싱
+// express.json() 미들웨어는 CORS 설정 후에 적용
 app.use(express.json());
+
 // 쿠키 파서(자료구조 빌드 및 문법검사) 미들웨어 추가
 app.use(cookieParser());
 
@@ -85,13 +86,14 @@ const verifyToken = (req, res, next) => { // 미들웨어 추가
             message: '인증이 필요합니다.' // 인증 필요 메시지
         });
     }
-
+    
     try {
         const decoded = jwt.verify(token, JWT_SECRET);
         // 토큰에서 추출한 정보를 req.user에 저장
         req.user = {
             userId: decoded.userId,
-            username: decoded.username
+            username: decoded.username ,
+            forename: decoded.forename         
         };
         next();
     } catch (err) {
@@ -108,7 +110,7 @@ const db = mysql.createConnection({
     port: 3306, // 데이터베이스 포트
     user: 'aluser1', // 데이터베이스 사용자
     password: 'alpassword2450!', // 데이터베이스 비밀번호
-    database: 'basicdb' // 이터베이스 이름
+    database: 'basicdb' // 이베이스 이름
 });
 
 // 데이터베이스 연결
@@ -131,8 +133,8 @@ const createSessionAndRecordLogin = async (userId, token, ipAddress, userAgent, 
 
     const sessionQuery = `
         INSERT INTO sessions 
-        (id, user_id, token, ip_address, user_agent, is_valid, expires_at) 
-        VALUES (?, ?, ?, ?, ?, 1, ?, ?, ?)`;
+        (session_id, user_id, token, ip_address, user_agent, is_valid, expires_at) 
+        VALUES (?, ?, ?, ?, ?, 1, ?)`;
 
     const sessionParams = [
         sessionId, // 세션 ID
@@ -227,7 +229,7 @@ app.post('/api/login', (req, res) => {
   console.log('로그인 시도:', { username, ipAddress });
 
   // 1. 먼저 users 테이블에서 사용자 ID 조회
-  const userQuery = 'SELECT user_id, username, password, role_id FROM users WHERE username = ?';
+  const userQuery = 'SELECT user_id, username, password, forename ,role_id FROM users WHERE username = ?';
   
   db.query(userQuery, [username], (err, users) => { // 사용자 조회
     if (err) {
@@ -265,11 +267,14 @@ app.post('/api/login', (req, res) => {
       { 
         userId: user.user_id,
         username: user.username,
+        forename: user.forename,
         roleId: user.role_id
       },
       JWT_SECRET,
       { expiresIn: '24h' }
+      
     );
+
     console.log('JWT 토큰 생성 완료');
 
     // 세션 생성
@@ -287,7 +292,9 @@ app.post('/api/login', (req, res) => {
             message: '로그인 성공',
             user: { 
                 userId: user.user_id,
-                username: user.username
+                username: user.username,
+                forename: user.forename,
+                roleId: user.role_id
             }
         });
     });
@@ -438,7 +445,7 @@ app.put('/api/posts/:id', verifyToken, (req, res) => {
             return res.status(403).json({ error: '수정 권한이 없습니다.' });
         }
 
-        // 게��글 수정
+        // 게글 수정
         const query = 'UPDATE posts SET title = ?, content = ?, category = ? WHERE post_id = ?';
         db.query(query, [title, content, category, postId], (err) => {
             if (err) {
@@ -452,7 +459,7 @@ app.put('/api/posts/:id', verifyToken, (req, res) => {
 
 // 게시글 삭제 (작성자 전용) api/posts/:id (api경로)
 // express()객체의 delete()메소드를 오버로딩? 자값은 (path, middleware/선택(일종의 조건문같은 느낌), handler - 여기서는 callback 씀) 
-app.delete('/api/posts/:id', verifyToken, (req, res) => {// 엔드포인트 추가
+app.delete('/api/posts/:id', verifyToken, (req, res) => {// 드포인트 추가
     // 미들웨어를 안쓰면 바로 callback 함수 호출
     // 미들웨어를 쓰면 미들웨어 호출 후 callback 함수 호출
     // 미들웨어에서 토큰 검증 실패시 401 상태 코드와 함께 JSON 응답
@@ -476,14 +483,14 @@ app.delete('/api/posts/:id', verifyToken, (req, res) => {// 엔드포인트 추�
     // 그러면 삭제할 때도 쿠키.토큰 검증 미들웨어를 통해 사용자 인증 후 삭제 가능
     // 삭제는 DB에서 삭제가 아니라 JSON 형태로 웹 내에서 삭제만 하면 됨
     // 그러면 쿼리를 한번 줄일 수 있어서 좋다고 생각함
-    // 수정할때도 마찬가지로 수정한 값을 DB에 저장하고
+    // 수정할때도 마찬지로 수정한 값을 DB에 저장하고
     // 수정 값은 JSON 형태로 웹 내에서 보관
     // 그러면 게시판 조회 시 쿼리를 안보내고 JSON 형태로 조회만 하면 됨
     // 결론은 삽입, 수정 시에만 DB에 저장하고 조회, 삭제는 웹 내에서 처리
     // 그런데 사용량이 많아야 쿼리 줄이는 것이 의미가 있을 듯
     // 사용량이 적어서 웹 내에서 처리하는 게 낫지만, 이미 만든거 굳이 바꿀 필요는 없음
 
-    // 작성자 확인
+    // 작성자 확
     db.query('SELECT * FROM posts WHERE post_id = ?', [postId], (err, results) => {
         if (err) {
             console.error('게시글 조회 실패:', err);
@@ -615,7 +622,7 @@ app.put('/api/posts/:id/views', (req, res) => {
         }
 
         if (results.length === 0) {
-            return res.status(404).json({ error: '게시글을 찾을 수 없습니다.' });
+            return res.status(404).json({ error: '시글을 찾을 수 없습니다.' });
         }
 
         // 조회수 증가
@@ -671,8 +678,12 @@ app.get('/api/search', (req, res) => {
 
 // WebSocket 서버를 8081 포트로 생성
 const wss = new WebSocket.Server({ 
-    port: 8081,
-    perMessageDeflate: false  // 성능 향상을 위해 압축 비활성화
+  server: server,  
+  path: '/ws',
+  cors: {
+      origin: ['http://183.105.171.41:3000', 'http://localhost:3000'],
+      methods: ['GET', 'POST']
+  }
 });
 
 // 캔버스 상태를 저장할 객체
@@ -688,80 +699,58 @@ wss.on('connection', function connection(ws, req) {
     ws.on('message', function incoming(data) {
         try {
             const message = JSON.parse(data);
-            
-            // 메시지 중복 체크를 위한 키 생성
-            const messageKey = JSON.stringify({
+            console.log('WebSocket 메시지 수신:', {
                 type: message.type,
-                canvasId: message.canvasId,
-                x: message.x,
-                y: message.y,
-                lastX: message.lastX,
-                lastY: message.lastY
+                chatroomId: message.chatroomId,
+                clientChatroomId: ws.chatroomId,
+                messageData: message
             });
 
-            // 이미 처리한 메시지면 무시
-            if (recentMessages.has(messageKey)) {
-                return;
+            if (message.type === 'draw') {
+                console.log('그리기 데이터:', {
+                    senderChatroomId: message.chatroomId,
+                    currentChatroomId: ws.chatroomId,
+                    canvasId: message.canvasId
+                });
             }
 
-            // 새 메시지 추가 (100ms 후 삭제)
-            recentMessages.add(messageKey);
-            setTimeout(() => recentMessages.delete(messageKey), 100);
-            
-            switch(message.type) {
-                case 'requestCanvasList':
-                    ws.send(JSON.stringify({
-                        type: 'canvasList',
-                        canvases: Array.from(canvasList).map(id => ({ id }))
-                    }));
-                    break;
-                    
-                case 'addCanvas':
-                    canvasList.add(message.id);
-                    break;
-                    
-                case 'deleteCanvas':
-                    canvasList.delete(message.id);
-                    canvasStates.delete(message.id);
-                    break;
-                    
-                case 'draw':
+            // 채팅방 ID 저장
+            if (message.type === 'join') {
+                ws.chatroomId = message.chatroomId;
+                console.log(`클라이언트가 채팅방 ${message.chatroomId}에 입장`);
+            }
+
+            // 그림판 관련 메시지는 같은 채팅방 사용자에게만 전송
+            if (['draw', 'clear', 'addCanvas', 'deleteCanvas'].includes(message.type)) {
+                wss.clients.forEach(function each(client) {
+                    if (client.chatroomId === ws.chatroomId && client.readyState === WebSocket.OPEN) {
+                        client.send(JSON.stringify(message));
+                    }
+                });
+
+                // 캔버스 상태 저장
+                if (message.type === 'draw') {
                     if (!canvasStates.has(message.canvasId)) {
                         canvasStates.set(message.canvasId, []);
                     }
                     canvasStates.get(message.canvasId).push(message);
-                    // 다른 클라이언트에게만 전달
-                    wss.clients.forEach(function each(client) {
-                        if (client !== ws && client.readyState === WebSocket.OPEN) {
-                            client.send(data);
-                        }
-                    });
-                    break;
-                    
-                case 'clear':
+                } else if (message.type === 'clear') {
                     canvasStates.set(message.canvasId, []);
-                    // 다른 클라이언트에게만 전달
-                    wss.clients.forEach(function each(client) {
-                        if (client !== ws && client.readyState === WebSocket.OPEN) {
-                            client.send(data);
-                        }
-                    });
-                    break;
+                }
             }
         } catch (error) {
             console.error('메시지 처리 중 오류:', error);
         }
     });
 
-    ws.on('close', function() {
-        console.log('클라이언트 연결 해제됨');
-    });
-
     ws.on('error', function(error) {
         console.error('WebSocket 에러:', error);
     });
-});
 
+    ws.on('close', function() {
+        console.log('클라이언트 연결 해제됨');
+    });
+});
 // 주기적으로 오래된 메시지 정리
 setInterval(() => {
     recentMessages.clear();
@@ -842,7 +831,7 @@ app.post('/api/verify-otp', (req, res) => {
       otpStore.delete(phoneNumber);
       return res.json({ 
         success: false, 
-        message: '인증번호가 만료되었습니다.' 
+        message: '인증호가 만료되었습니다.' 
       });
     }
 
@@ -1021,9 +1010,382 @@ app.put('/api/admin/users/:id/status', verifyAdmin, (req, res) => {
   });
 });
 
+// 채팅방 생성
+app.post('/api/chatrooms', verifyToken, (req, res) => {
+  const { name, description, isGroup, password } = req.body;
+  const userId = req.user.userId;
+  const username = req.user.username;
+  const forename = req.user.forename;  // JWT 토큰에서 forename 가져오기
+  
+  console.log('채팅방 생성 요청:', {
+    name,
+    userId,
+    forename,  // 디버깅용 로그
+    description
+  });
+
+  // 트랜잭션 시작
+  db.beginTransaction(async (err) => {
+    if (err) {
+      console.error('트랜잭션 시작 실패:', err);
+      return res.status(500).json({ error: '서버 오류가 발생했습니다.' });
+    }
+
+    try {
+      // 1. 채팅방 생성 (chatname으로 변경)
+      const chatroomQuery = `
+        INSERT INTO chatrooms (chatname, description, is_group, password, forename)
+        VALUES (?, ?, ?, ?, ?)
+      `;
+      
+      db.query(chatroomQuery, [name, description, isGroup ? 1 : 0, password, forename], (err, result) => {
+        if (err) {
+          return db.rollback(() => {
+            console.error('채팅방 생성 실패:', err);
+            res.status(500).json({ error: '채팅방 생성에 실패했습니다.' });
+          });
+        }
+
+        const chatroomId = result.insertId;
+
+        // 2. 채팅방 생성자를 chatroom_users에 추가 (관리자 권한으로)
+        const userQuery = `
+          INSERT INTO chatroom_users (chatroom_id, user_id, is_admin)
+          VALUES (?, ?, 1)
+        `;
+
+        db.query(userQuery, [chatroomId, userId], (err) => {
+          if (err) {
+            return db.rollback(() => {
+              console.error('채팅방 사용자 추가 실패:', err);
+              res.status(500).json({ error: '채팅방 생성에 실패했습니다.' });
+            });
+          }
+
+          // 트랜잭션 커밋
+          db.commit((err) => {
+            if (err) {
+              return db.rollback(() => {
+                console.error('커밋 실패:', err);
+                res.status(500).json({ error: '채팅방 생성에 실패했습니다.' });
+              });
+            }
+
+            res.json({ 
+              success: true, 
+              message: '채팅방이 생성되었습니다.',
+              chatroomId: chatroomId 
+            });
+          });
+        });
+      });
+    } catch (error) {
+      return db.rollback(() => {
+        console.error('채팅방 생성 중 오류:', error);
+        res.status(500).json({ error: '채팅방 생성에 실패했습니다.' });
+      });
+    }
+  });
+});
+
+// 채팅방 삭제/나가기
+app.delete('/api/chatrooms/:chatroomId', verifyToken, async (req, res) => {
+    const chatroomId = parseInt(req.params.chatroomId, 10);
+    const userId = req.user.userId;
+
+    try {
+        // 채팅방 소가자 확인 및 역할 체크
+        const checkUserQuery = `
+            SELECT cu.user_id, cu.is_admin
+            FROM chatroom_users cu
+            WHERE cu.chatroom_id = ? AND cu.user_id = ?
+        `;
+        
+        db.query(checkUserQuery, [chatroomId, userId], (err, results) => {
+            if (err) {
+                console.error('채팅방 조회 실패:', err);
+                return res.status(500).json({ error: '채팅방 조회에 실패했습니다.' });
+            }
+
+            if (results.length === 0) {
+                return res.status(404).json({ error: '채팅방을 찾을 수 없습니다.' });
+            }
+
+            // 관리자인 경우: 채팅방 완전 삭제
+            if (results[0].is_admin) {
+                const deleteQuery = `DELETE FROM chatrooms WHERE chatroom_id = ?`;
+                db.query(deleteQuery, [chatroomId], (err) => {
+                    if (err) {
+                        console.error('채팅방 삭제 실패:', err);
+                        return res.status(500).json({ error: '채팅방 삭제에 실패했습니다.' });
+                    }
+                    res.json({ message: '채팅방이 삭제되었습니다.' });
+                });
+            } 
+            // 일반 참가자인 경우: chatroom_users에서만 삭제 (채팅방 나가기)
+            else {
+                const leaveQuery = `DELETE FROM chatroom_users WHERE chatroom_id = ? AND user_id = ?`;
+                db.query(leaveQuery, [chatroomId, userId], (err) => {
+                    if (err) {
+                        console.error('채팅방 나가기 실패:', err);
+                        return res.status(500).json({ error: '채팅방 나가기에 실패했습니다.' });
+                    }
+                    res.json({ message: '채팅방을 나갔습니다.' });
+                });
+            }
+        });
+    } catch (error) {
+        console.error('채팅방 삭제/나가기 중 오류:', error);
+        res.status(500).json({ error: '처리 중 오류가 발생했습니다.' });
+    }
+});
+
+// 비로그인 사용자의 채팅방 목록 조회
+app.get('/api/chatrooms/search', (req, res) => {
+  const { keyword } = req.query;
+  
+
+  const query = `
+    SELECT 
+        c.chatroom_id,
+        c.chatname,
+        c.description,
+        c.is_group,
+        c.created_at,
+        c.forename,
+        EXISTS (
+            SELECT 1 
+            FROM chatroom_users 
+            WHERE chatroom_id = c.chatroom_id 
+            
+        ) as is_joined
+    FROM chatrooms c
+    WHERE c.chatname LIKE ?
+    ORDER BY 
+        CASE 
+            WHEN c.chatname LIKE ? THEN 0  -- 정확히 일치
+            WHEN c.chatname LIKE ? THEN 1  -- 시작 부분 일치
+            ELSE 2                         -- 부분 일치
+        END,
+        c.created_at DESC
+  `;
+
+  const searchPattern = `%${keyword}%`;
+  const startPattern = `${keyword}%`;
+  const exactPattern = keyword;
+  
+  db.query(query, [searchPattern, exactPattern, startPattern], (err, results) => {
+    if (err) {
+      console.error('채팅방 검색 실패:', err);
+      return res.status(500).json({ error: '채팅방 검색에 실패했습니다.' });
+    }
+
+    const formattedResults = results.map(room => ({
+      ...room,
+      is_group: !!room.is_group,
+      is_joined: !!room.is_joined,
+      created_at: new Date(room.created_at).toISOString()
+    }));
+
+    res.json(formattedResults);
+  });
+});
+
+// 채팅방 입장 API
+app.post('/api/chatrooms/:id/join', verifyToken, (req, res) => {
+    const chatroomId = req.params.id;
+    const userId = req.user.userId;
+
+    // 이미 참여 중인지 확인
+    const checkQuery = `
+        SELECT 1 FROM chatroom_users 
+        WHERE chatroom_id = ? AND user_id = ?
+    `;
+
+    db.query(checkQuery, [chatroomId, userId], (err, results) => {
+        if (err) {
+            return res.status(500).json({ error: '서버 오류가 발생했습니다.' });
+        }
+
+        if (results.length > 0) {
+            return res.status(400).json({ error: '이미 참여 중인 채팅방입니다.' });
+        }
+
+        // 채팅방에 사용자 추가
+        const joinQuery = `
+            INSERT INTO chatroom_users (chatroom_id, user_id, is_admin)
+            VALUES (?, ?, 0)
+        `;
+
+        db.query(joinQuery, [chatroomId, userId], (err) => {
+            if (err) {
+                return res.status(500).json({ error: '채팅방 입장에 실패했습니다.' });
+            }
+
+            res.json({ 
+                success: true, 
+                message: '채팅방에 입장했습니다.' 
+            });
+        });
+    });
+});
+
+// 사용자가 참여하고 있는 채팅방 목록 조회
+app.get('/api/my-chatrooms', verifyToken, (req, res) => {
+    const userId = req.user.userId;
+    
+    const query = `
+        SELECT 
+            c.chatroom_id,
+            c.chatname,
+            c.description,
+            c.is_group,
+            c.created_at,
+            c.forename,
+            cu.is_admin,
+            cu.joined_at
+        FROM chatrooms c
+        INNER JOIN chatroom_users cu ON c.chatroom_id = cu.chatroom_id
+        WHERE cu.user_id = ?
+        ORDER BY cu.joined_at DESC
+    `;
+    
+    db.query(query, [userId], (err, results) => {
+        if (err) {
+            console.error('채팅방 목록 조회 실패:', err);
+            return res.status(500).json({ 
+                error: '채팅방 목록 조회에 실패했습니다.' 
+            });
+        }
+        
+        // 결과를 boolean으로 변환하고 날짜 포맷팅
+        const formattedResults = results.map(room => ({
+            chatroom_id: room.chatroom_id,
+            chatname: room.chatname,
+            description: room.description,
+            is_group: !!room.is_group,
+            created_at: new Date(room.created_at).toISOString(),
+            forename: room.forename,
+            is_admin: !!room.is_admin,
+            joined_at: new Date(room.joined_at).toISOString()
+        }));
+
+        console.log('사용자의 채팅방 목록 조회 결과:', formattedResults);
+        res.json(formattedResults);
+    });
+});
+
 // 서버 시작
 const PORT = 8080;
 app.listen(PORT, '0.0.0.0', () => {
     console.log(`서버가 포트 ${PORT}에서 실행 중입니다.`);
 });
 
+//mainServer.js
+// 메시지 저장 엔드포인트
+app.post('/api/messages', verifyToken, async (req, res) => {
+  const { chatroom_id, content, message_type = 'text' } = req.body;
+  const sender_id = req.user.userId;
+
+  try {
+      const query = `
+          INSERT INTO messages 
+          (chatroom_id, sender_id, content, message_type, sent_at)
+          VALUES (?, ?, ?, ?, NOW())
+      `;
+
+      db.query(query, [chatroom_id, sender_id, content, message_type], (err, result) => {
+          if (err) {
+              console.error('메시지 저장 실패:', err);
+              return res.status(500).json({ error: '메시지 저장에 실패했습니다.' });
+          }
+
+          // 저장된 메시지 정보 조회
+          const messageQuery = `
+              SELECT 
+                  m.*,
+                  u.username,
+                  u.forename
+              FROM messages m
+              JOIN users u ON m.sender_id = u.user_id
+              WHERE m.message_id = ?
+          `;
+
+          db.query(messageQuery, [result.insertId], (err, messages) => {
+              if (err) {
+                  console.error('메시지 조회 실패:', err);
+                  return res.status(500).json({ error: '메시지 조회에 실패했습니다.' });
+              }
+
+              const savedMessage = messages[0];
+              
+              // 웹소켓으로 메시지 브로드캐스트
+              wss.clients.forEach(client => {
+                  if (client.chatroomId === chatroom_id && client.readyState === WebSocket.OPEN) {
+                      client.send(JSON.stringify({
+                          type: 'message',
+                          data: savedMessage
+                      }));
+                  }
+              });
+
+              res.json(savedMessage);
+          });
+      });
+  } catch (error) {
+      console.error('메시지 처리 중 오류:', error);
+      res.status(500).json({ error: '메시지 처리 중 오류가 발생했습니다.' });
+  }
+});
+
+// 채팅방 메시지 조회 API
+app.get('/api/chatrooms/:chatroomId/messages', verifyToken, (req, res) => {
+  const { chatroomId } = req.params;
+  
+  const query = `
+      SELECT 
+          m.*,
+          u.username,
+          u.forename
+      FROM messages m
+      JOIN users u ON m.sender_id = u.user_id
+      WHERE m.chatroom_id = ?
+      ORDER BY m.sent_at ASC
+  `;
+
+  db.query(query, [chatroomId], (err, messages) => {
+      if (err) {
+          console.error('메시지 조회 실패:', err);
+          return res.status(500).json({ error: '메시지 조회에 실패했습니다.' });
+      }
+      res.json({ messages });
+  });
+});
+
+// 메시지 읽음 처리 API
+app.put('/api/messages/read', verifyToken, (req, res) => {
+    const chatroomId = parseInt(req.body.chatroomId, 10); // 문자열을 숫자로 변환
+    
+    if (isNaN(chatroomId)) {
+        return res.status(400).json({ error: '유효하지 않은 채팅방 ID입니다.' });
+    }
+
+    const query = `
+        UPDATE messages
+        SET is_read = true
+        WHERE chatroom_id = ?
+    `;
+
+    db.query(query, [chatroomId], (err) => {
+        if (err) {
+            console.error('메시지 읽음 처리 실패:', err);
+            return res.status(500).json({ error: '메시지 읽음 처리에 실패했습니다.' });
+        }
+        res.json({ success: true });
+    });
+});
+
+// 서버 시작
+server.listen(8081, '0.0.0.0', () => {
+  console.log('서버가 8081 포트에서 실행 중입니다.');
+});
