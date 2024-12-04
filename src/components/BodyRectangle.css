@@ -147,43 +147,117 @@
 }
 
 @media (max-width: 768px) {
+    .body-container {        
+        margin-top: -80px;        
+    }
+
     .body-content {
-        padding: 30px;
+        padding: 20px;
     }
 
     .content-inner {
-        margin-bottom: 70%;
+        margin-bottom: 50%;
+        padding: 0 15px;
     }
 
     .content-inner h1 {
         font-size: 2.5rem;
+        margin-bottom: 0.5rem;
     }
 
     .content-inner h2 {
         font-size: 1.8rem;
+        line-height: 1.3;
     }
 
     .scroll-indicator {
-        bottom: 0px;
+        bottom: 20%;
     }
-    .scroll-indicator {
-        position: absolute;
-        bottom: 30%;
-        left: 50%;
-        transform: translateX(-50%);
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        opacity: 0;
-        animation: fadeIn 1s ease forwards 1.2s;
+
+    .mouse {
+        width: 20px;
+        height: 32px;
     }
-    .body-container {        
-        margin-top: -21%;        
+
+    .wheel {
+        width: 3px;
+        height: 6px;
+    }
+
+    .scroll-text {
+        font-size: 10px;
     }
 }
 
 @media (max-width: 480px) {
     .body-container {
-        margin-top: -32%;
+        margin-top: -60px;
+    }
+
+    .body-content {
+        padding: 15px;
+    }
+
+    .content-inner {
+        margin-bottom: 40%;
+        padding: 0 10px;
+    }
+
+    .content-inner h1 {
+        font-size: 2rem;
+        margin-bottom: 0.3rem;
+    }
+
+    .content-inner h2 {
+        font-size: 1.5rem;
+        line-height: 1.2;
+    }
+
+    .body-overlay {
+        background: linear-gradient(
+            to bottom,
+            rgba(0, 0, 0, 0.3) 0%,
+            rgba(0, 0, 0, 0.6) 70%,
+            rgba(0, 0, 0, 0.95) 100%
+        );
+    }
+
+    .scroll-indicator {
+        bottom: 15%;
+    }
+
+    .mouse {
+        width: 18px;
+        height: 28px;
+        border-width: 1.5px;
+    }
+
+    .wheel {
+        width: 2px;
+        height: 5px;
+    }
+
+    .scroll-text {
+        font-size: 9px;
+        letter-spacing: 1.5px;
+    }
+}
+
+/* 추가: 매우 작은 화면 대응 */
+@media (max-width: 360px) {
+    .content-inner h1 {
+        font-size: 1.8rem;
+    }
+
+    .content-inner h2 {
+        font-size: 1.3rem;
+    }
+
+    .content-inner {
+        margin-bottom: 35%;
+    }
+
+    .scroll-indicator {
+        bottom: 12%;
     }
 }

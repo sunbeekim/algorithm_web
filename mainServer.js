@@ -743,6 +743,10 @@ wss.on('connection', function connection(ws, req) {
         }
     });
 
+    ws.on('close', function() {
+        console.log('클라이언트 연결 해제됨');
+    });
+
     ws.on('error', function(error) {
         console.error('WebSocket 에러:', error);
     });
@@ -1383,6 +1387,71 @@ app.put('/api/messages/read', verifyToken, (req, res) => {
         }
         res.json({ success: true });
     });
+});
+
+// 채팅방 정보 조회 API
+app.get('/api/chatrooms/:chatroomId', verifyToken, (req, res) => {
+  const { chatroomId } = req.params;
+  const userId = req.user.userId;
+  
+  if (isNaN(parseInt(chatroomId, 10))) {
+      return res.status(400).json({ error: '유효하지 않은 채팅방 ID입니다.' });
+  }
+
+  // 먼저 사용자가 해당 채팅방의 멤버인지 확인
+  const memberCheckQuery = `
+      SELECT * FROM chatroom_users 
+      WHERE chatroom_id = ? AND user_id = ?
+  `;
+
+  db.query(memberCheckQuery, [chatroomId, userId], (err, memberResults) => {
+      if (err) {
+          console.error('멤버 확인 실패:', err);
+          return res.status(500).json({ error: '채팅방 접근 권한 확인에 실패했습니다.' });
+      }
+
+      if (memberResults.length === 0) {
+          return res.status(403).json({ error: '채팅방 접근 권한이 없습니다.' });
+      }
+
+      // 채팅방 정보 조회
+      const chatroomQuery = `
+          SELECT 
+              c.chatroom_id,
+              c.chatname,
+              c.description,
+              c.is_group,
+              c.created_at,
+              c.forename,
+              cu.is_admin,
+              cu.joined_at
+          FROM chatrooms c
+          JOIN chatroom_users cu ON c.chatroom_id = cu.chatroom_id
+          WHERE c.chatroom_id = ? AND cu.user_id = ?
+      `;
+
+      db.query(chatroomQuery, [chatroomId, userId], (err, results) => {
+          if (err) {
+              console.error('채팅방 정보 조회 실패:', err);
+              return res.status(500).json({ error: '채팅방 정보 조회에 실패했습니다.' });
+          }
+
+          if (results.length === 0) {
+              return res.status(404).json({ error: '채팅방을 찾을 수 없습니다.' });
+          }
+
+          const chatroom = {
+              ...results[0],
+              is_group: !!results[0].is_group,
+              is_admin: !!results[0].is_admin,
+              created_at: new Date(results[0].created_at).toISOString(),
+              joined_at: new Date(results[0].joined_at).toISOString()
+          };
+
+          console.log('조회된 채팅방 정보:', chatroom); // 디버깅용
+          res.json(chatroom);
+      });
+  });
 });
 
 // 서버 시작

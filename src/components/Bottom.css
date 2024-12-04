@@ -8,6 +8,17 @@
     flex-direction: column;
     position: relative;
     height: auto;
+    margin-top: auto;
+}
+
+.bottom-container {
+    width: 100%;
+    position: relative;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    z-index: 10;
+    background-color: #006666;
 }
 
 .bottom-content {

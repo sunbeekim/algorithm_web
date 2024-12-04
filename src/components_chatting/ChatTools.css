@@ -1,0 +1,169 @@
+/* 컨테이너 */
+.chat-tools {
+    display: flex;
+    gap: 10px;
+    padding: 15px;
+    background-color: #f8f9fa;
+    border-bottom: 1px solid #dee2e6;
+    align-items: center;
+    position: fixed;
+    top: 70px;
+    left: 0;
+    right: 0;
+    z-index: 999;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+/* 채팅 토글 버튼 */
+.chat-button {
+    padding: 8px 16px;
+    border: none;
+    border-radius: 4px;
+    background-color: #e3f2fd;
+    color: #1976d2;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    transition: all 0.2s;
+}
+
+.chat-button.active {
+    background-color: #1976d2;
+    color: white;
+}
+
+/* 채팅방 선택 드롭다운 */
+.chat-name {
+    min-width: 150px;
+    padding: 8px;
+    border: 1px solid #ced4da;
+    border-radius: 4px;
+    font-size: 14px;
+}
+
+.chat-name:disabled {
+    background-color: #e9ecef;
+    cursor: not-allowed;
+}
+
+/* 검색 필드 */
+.search-field {
+    flex: 1;
+    padding: 8px 12px;
+    border: 1px solid #ced4da;
+    border-radius: 4px;
+    font-size: 14px;
+}
+
+/* 버튼 공통 스타일 */
+.chat-tools button {
+    padding: 8px 16px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    transition: all 0.2s;
+    font-size: 14px;
+}
+
+/* 개별 버튼 스타일 */
+.search-button {
+    background-color: #f8f9fa;
+    color: #495057;
+    padding: 8px 12px;
+}
+
+.chat-add-button {
+    background-color: #28a745;
+    color: white;
+}
+
+.chat-delete-button {
+    background-color: #dc3545;
+    color: white;
+}
+
+/* 호버 효과 */
+.chat-button:hover {
+    background-color: #bbdefb;
+}
+
+.chat-button.active:hover {
+    background-color: #1565c0;
+}
+
+.search-button:hover {
+    background-color: #e9ecef;
+}
+
+.chat-add-button:hover {
+    background-color: #218838;
+}
+
+.chat-delete-button:hover:not(:disabled) {
+    background-color: #c82333;
+}
+
+/* 비활성화 상태 */
+button:disabled {
+    opacity: 0.65;
+    cursor: not-allowed;
+}
+
+/* 아이콘과 텍스트 스타일 */
+.button-text {
+    font-size: 14px;
+}
+
+.button-icon {
+    font-size: 16px;
+}
+
+/* 반응형 디자인 */
+@media (max-width: 768px) {
+    .chat-tools {
+        top: 70px;
+        padding: 8px;
+        gap: 8px;
+    }
+
+    .chat-name {
+        min-width: 120px;
+    }
+
+    .button-text {
+        display: none;
+    }
+
+    .chat-tools button {
+        padding: 8px;
+    }
+}
+
+/* 반응형 디자인 */
+@media (max-width: 480px) {
+    .chat-tools {
+        top: 70px;
+        padding: 6px;
+        gap: 6px;
+    }
+
+    .chat-name {
+        min-width: 100px;
+        width: auto;
+    }
+
+    .search-field {
+        min-width: 80px;
+        width: auto;
+        flex: 1;
+    }
+
+    .chat-tools button {
+        padding: 6px;
+        min-width: 32px;
+    }
+}

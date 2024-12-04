@@ -1,0 +1,245 @@
+.canvas-container {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 20px;
+    box-sizing: border-box;
+}
+
+.canvases-wrapper {
+    width: 100%;
+    max-width: 800px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 20px;
+}
+
+.canvas {
+    max-width: 100%;
+    height: auto;
+    background-color: white;
+}
+
+@media (max-width: 900px) {
+    .canvas-container {
+        width: calc(100% - 70px);
+        padding: 120px 70px 80px 20px;
+    }
+
+    .drawing-canvas {
+        width: 100%;
+        max-width: 600px;
+    }
+}
+
+@media (max-width: 480px) {
+    .canvas-container {
+        width: calc(100% - 60px);
+        padding: 100px 60px 80px 10px;
+    }
+
+    .drawing-canvas {
+        max-width: 100%;
+    }
+}
+
+/* 반응형 조정 */
+@media (max-width: 1400px) {
+    .drawing-canvas {
+        width: 900px;
+        height: 600px;
+    }
+}
+
+@media (max-width: 992px) {
+    .drawing-canvas {
+        width: 750px;
+        height: 500px;
+    }
+}
+
+@media (max-width: 768px) {
+    .drawing-canvas {
+        width: 600px;
+        height: 400px;
+    }
+}
+
+@media (max-width: 576px) {
+    .drawing-canvas {
+        width: 450px;
+        height: 300px;
+    }
+}
+
+/* 드로잉 도구 컨테이너 */
+.drawing-tools {
+    display: flex;
+    gap: 10px;
+    padding: 15px;
+    background-color: #ffffff;
+    border-top: 1px solid #e0e0e0;
+    align-items: center;
+    justify-content: center;
+    flex-wrap: wrap;
+}
+
+/* 도구 버튼 공통 스타일 */
+.drawing-tools button {
+    padding: 8px;
+    border: none;
+    border-radius: 4px;
+    background-color: #f0f0f0;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s ease;
+}
+
+.drawing-tools button:hover {
+    background-color: #e0e0e0;
+}
+
+.drawing-tools button.active {
+    background-color: #007bff;
+    color: white;
+}
+
+/* 색상 선택기 */
+.color-picker {
+    width: 40px;
+    height: 40px;
+    padding: 2px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+/* 브러시 크기 조절 */
+.brush-size {
+    width: 100px;
+    height: 8px;
+    cursor: pointer;
+    background-color: #f0f0f0;
+    border-radius: 4px;
+    -webkit-appearance: none;
+}
+
+.brush-size::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    width: 16px;
+    height: 16px;
+    background-color: #007bff;
+    border-radius: 50%;
+    cursor: pointer;
+}
+
+.brush-size::-moz-range-thumb {
+    width: 16px;
+    height: 16px;
+    background-color: #007bff;
+    border-radius: 50%;
+    cursor: pointer;
+    border: none;
+}
+
+/* 터치 디바이스 최적화 */
+@media (hover: none) {
+    .drawing-tools button {
+        min-width: 44px;
+        min-height: 44px;
+    }
+
+    .color-picker {
+        min-width: 44px;
+        min-height: 44px;
+    }
+
+    .brush-size {
+        height: 44px;
+    }
+}
+
+/* 다크 모드 지원 */
+@media (prefers-color-scheme: dark) {
+    .canvas-container {
+        background-color: #1a1a1a;
+    }
+
+    .canvas {
+        box-shadow: 0 2px 4px rgba(255, 255, 255, 0.1);
+    }
+
+    .drawing-tools {
+        background-color: #2d2d2d;
+        border-top-color: #404040;
+    }
+
+    .drawing-tools button {
+        background-color: #404040;
+        color: #ffffff;
+    }
+
+    .drawing-tools button:hover {
+        background-color: #505050;
+    }
+
+    .drawing-tools button.active {
+        background-color: #0056b3;
+    }
+
+    .brush-size {
+        background-color: #404040;
+    }
+}
+
+/* 접근성 관련 스타일 */
+.drawing-tools button:focus,
+.color-picker:focus,
+.brush-size:focus {
+    outline: 2px solid #007bff;
+    outline-offset: 2px;
+}
+
+/* 애니메이션 효과 */
+@keyframes toolButtonHover {
+    from {
+        transform: scale(1);
+    }
+    to {
+        transform: scale(1.05);
+    }
+}
+
+.drawing-tools button:hover {
+    animation: toolButtonHover 0.2s ease forwards;
+}
+
+/* 로딩 상태를 위한 스타일 */
+.canvas-loading {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+}
+
+.canvas-loading-spinner {
+    width: 40px;
+    height: 40px;
+    border: 4px solid #f3f3f3;
+    border-top: 4px solid #007bff;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+} 

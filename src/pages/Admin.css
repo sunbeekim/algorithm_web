@@ -40,4 +40,37 @@ button {
 
 button:hover {
   background-color: #167a96;
+}
+
+.users-table select {
+    padding: 5px;
+    margin-right: 10px;
+    border-radius: 4px;
+    border: 1px solid #ddd;
+}
+
+.users-table button {
+    padding: 5px 10px;
+    border-radius: 4px;
+    border: none;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+.activate-btn {
+    background-color: #4CAF50;
+    color: white;
+}
+
+.deactivate-btn {
+    background-color: #f44336;
+    color: white;
+}
+
+.activate-btn:hover {
+    background-color: #45a049;
+}
+
+.deactivate-btn:hover {
+    background-color: #da190b;
 } 

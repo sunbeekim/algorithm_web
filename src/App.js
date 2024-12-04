@@ -7,7 +7,7 @@ import Home from './pages/Home';
 import Board from './pages/Board';
 import Coding from './pages/Coding';  
 import Ranking from './pages/Ranking';
-import Paint from './pages/Paint';
+import Canvas from './components_canvas/Canvas';
 
 import { AuthProvider } from './context/AuthContext';
 import Algorithm from './pages/Algorithm';
@@ -42,7 +42,12 @@ function App() {
       } else {
         setShowButton(false);
       }
-    }, 100), // 100ms 마다 실행
+
+      const scrollEvent = new CustomEvent('homeScroll', {
+        detail: { scrollY: window.scrollY }
+      });
+      window.dispatchEvent(scrollEvent);
+    }, 100),
     []
   );
 
@@ -61,7 +66,9 @@ function App() {
   return (
     <AuthProvider>
       <div className="wrapper">
+        <div>
         <Header />
+        </div>
         <div className="content-container">
           <Routes>
             <Route default path="/" element={<Home />} />
@@ -71,7 +78,7 @@ function App() {
             <Route path="/algorithm" element={<Algorithm />} />
             <Route path="/ranking" element={<Ranking />} />
             {/* <Route path="/paint" element={<Paint />} /> */}
-            <Route path="/chatroom/:chatroomId" element={
+            <Route path="/chatroom/:id" element={
                     <PrivateRoute>
                         <ChatRoom />
                     </PrivateRoute>

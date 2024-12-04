@@ -4,6 +4,14 @@ import './Admin.css';
 
 const API_BASE_URL = 'http://183.105.171.41:8080';
 
+const ROLES = {
+  1: { id: 1, name: '관리자', label: 'admin' },
+  2: { id: 2, name: '서브관리자', label: 'subadmin' },
+  3: { id: 3, name: '프리미엄 사용자', label: 'premium_user' },
+  4: { id: 4, name: '사용자', label: 'user' },
+  5: { id: 5, name: '방문자', label: 'guest' }
+};
+
 const Admin = () => {
   const [users, setUsers] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -33,7 +41,7 @@ const Admin = () => {
       }, {
         withCredentials: true
       });
-      fetchUsers();  // 목록 새로고침
+      fetchUsers();
     } catch (error) {
       alert('권한 변경에 실패했습니다.');
     }
@@ -49,7 +57,7 @@ const Admin = () => {
       }, {
         withCredentials: true
       });
-      fetchUsers();  // 목록 새로고침
+      fetchUsers();
     } catch (error) {
       alert('상태 변경에 실패했습니다.');
     }
@@ -80,7 +88,7 @@ const Admin = () => {
               <td>{user.user_id}</td>
               <td>{user.username}</td>
               <td>{user.email}</td>
-              <td>{user.role_name}</td>
+              <td>{ROLES[user.role_id]?.name || user.role_name}</td>
               <td>{user.status}</td>
               <td>{new Date(user.created_at).toLocaleDateString()}</td>
               <td>
@@ -88,15 +96,18 @@ const Admin = () => {
                   value={user.role_id}
                   onChange={(e) => handleRoleChange(user.user_id, e.target.value)}
                 >
-                  <option value="1">관리자</option>
-                  <option value="2">일반 사용자</option>
+                  {Object.values(ROLES).map(role => (
+                    <option key={role.id} value={role.id}>
+                      {role.name}
+                    </option>
+                  ))}
                 </select>
-                <button onClick={() => handleRoleChange(user.user_id, user.role_id === 1 ? 2 : 1)}>
-                  {user.role_id === 1 ? '일반 사용자로 변경' : '관리자로 변경'}
-                </button>
               </td>
               <td>
-                <button onClick={() => handleStatusChange(user.user_id)}>
+                <button 
+                  onClick={() => handleStatusChange(user.user_id)}
+                  className={user.status === 'active' ? 'deactivate-btn' : 'activate-btn'}
+                >
                   {user.status === 'active' ? '비활성화' : '활성화'}
                 </button>
               </td>

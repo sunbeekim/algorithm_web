@@ -189,7 +189,21 @@ function ChatModal({ show, chatName, chatroomId, onClose }) {
         }
     };
 
-    if (!show) return null;
+    // 디버깅용 로그 추가
+    useEffect(() => {
+        console.log('ChatModal props:', { show, chatName, chatroomId });
+    }, [show, chatName, chatroomId]);
+
+    // 조건부 렌더링 전에 로그 추가
+    if (!show || !chatroomId) {
+        console.log('ChatModal not showing because:', { 
+            show, 
+            chatroomId,
+            showIsFalsy: !show,
+            chatroomIdIsFalsy: !chatroomId 
+        });
+        return null;
+    }
 
     return (
         <div className="chat-modal">
@@ -203,6 +217,9 @@ function ChatModal({ show, chatName, chatroomId, onClose }) {
                         key={msg.id} 
                         className={`chat-message ${msg.sender === 'me' ? 'sent' : 'received'}`}
                     >
+                        {msg.sender !== 'me' && (
+                            <div className="message-sender">{msg.forename}</div>
+                        )}
                         <div className="message-content">{msg.text}</div>
                         <div className="message-timestamp">{msg.timestamp}</div>
                     </div>

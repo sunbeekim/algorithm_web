@@ -1,8 +1,10 @@
 .home-container {
     display: flex;
     flex-direction: column;
-    width: 100%;
+    width: 100%;    
     background-color: rgb(255, 255, 255);
+    min-height: 100vh;
+    position: relative;
 }
 
 /* 공통 섹션 스타일 */
@@ -13,6 +15,35 @@
     position: relative;
 }
 
+/* 메인 섹션 스타일 수정 */
+.main-section {
+    height: 100vh;
+    min-height: 100vh;
+    padding: 0;
+    opacity: 1;
+    transform: none;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end; /* 하단 정렬 */
+    margin-bottom: 0; /* 간격 제거 */
+}
+
+/* 인트로 섹션 스타일 수정 */
+.intro-section {
+    background: #f8f9fa;
+    margin-top: 0; /* 간격 제거 */
+    padding-top: 0; /* 상단 패딩 제거 */
+}
+
+/* BodyRectangle 스타일 수정 (만약 BodyRectangle 컴포넌트의 스타일을 직접 수정할 수 없다면) */
+.main-section .body-rectangle {
+    margin-bottom: 0;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
 .section-content {
     max-width: 1200px;
     margin: 0 auto;
@@ -20,17 +51,6 @@
 }
 
 /* 섹션별 스타일 */
-.main-section {
-    height: 100vh;
-    padding: 0;
-    opacity: 1;
-    transform: none;
-}
-
-.intro-section {
-    background: #f8f9fa;
-}
-
 .features-section {
     background: #ffffff;
 }
@@ -43,14 +63,57 @@
     background: #ffffff;
 }
 
-/* 반응형 디자인 */
+/* 반응형 디자인 수정 */
 @media (max-width: 768px) {
     .section {
-        padding: 60px 0;
+        min-height: 100vh;
+        padding: 0; /* 패딩 완전 제거 */
+    }
+
+    .main-section {
+        height: 100vh;
+        min-height: 100vh;
+        margin: 0;
+        padding: 0;
+    }
+
+    .intro-section {
+        margin: 0;
+        padding: 0;
     }
 
     .section-content {
-        padding: 0 15px;
+        padding: 20px;  /* 내부 컨텐츠만 패딩 유지 */
+    }
+
+    /* BodyRectangle 모바일 대응 */
+    .main-section .body-rectangle {
+        margin: 0;
+        padding: 0;
+        height: 100%;
+    }
+}
+
+/* 480px 이하 화면 대응 */
+@media (max-width: 480px) {
+    .main-section {
+        height: calc(100vh - 60px); /* 헤더 높이만큼 빼기 */
+        min-height: calc(100vh - 60px);
+    }
+
+    .main-section .body-rectangle {
+        height: calc(100vh - 60px);
+    }
+
+    .section {
+        min-height: calc(100vh - 60px);
+    }
+
+    .home-content {
+        padding: 20px;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
     }
 }
 
