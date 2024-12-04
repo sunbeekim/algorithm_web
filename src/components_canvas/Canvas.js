@@ -80,13 +80,33 @@ function Canvas({ chatroomId }) {
             return;
         }
 
+        // 두 점 사이의 거리 계산
+        const dx = x - lastX;
+        const dy = y - lastY;
+        const distance = Math.sqrt(dx * dx + dy * dy);
+        
+        // 보간할 점의 개수 결정 (거리에 비례)
+        const steps = Math.max(Math.floor(distance / 2), 1);
+        
         ctx.beginPath();
-        ctx.moveTo(lastX, lastY);
-        ctx.lineTo(x, y);
         ctx.strokeStyle = strokeColor;
         ctx.lineWidth = lineWidth;
         ctx.lineCap = 'round';
         ctx.lineJoin = 'round';
+
+        // 부드러운 선을 위한 보간
+        for (let i = 0; i <= steps; i++) {
+            const t = i / steps;
+            const interpolatedX = lastX + dx * t;
+            const interpolatedY = lastY + dy * t;
+            
+            if (i === 0) {
+                ctx.moveTo(interpolatedX, interpolatedY);
+            } else {
+                ctx.lineTo(interpolatedX, interpolatedY);
+            }
+        }
+        
         ctx.stroke();
     }, []);
 
