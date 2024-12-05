@@ -42,16 +42,16 @@ class Home extends Component {
     const { state: authState } = this.context;
 
     return (
-      <div className="home-container">
-        {/* 메인 섹션: 인사말 */}
+      <VerticalContent>
+        <div className="home-container">
+          {/* 메인 섹션: 인사말 */}
         <section className="section main-section">
           <BodyRectangle>
             <div className="home-content">
               {/* 관리자 링크 추가 */}
               {authState.isAuthenticated && authState.user?.roleId === 1 && (
                 <div className="admin-link">
-                  <Link to="/admin" className="admin-button">
-                    <FaChartBar />
+                  <Link to="/admin" className="admin-button">                    
                     <span>관리자 페이지</span>
                   </Link>
                 </div>
@@ -117,6 +117,7 @@ class Home extends Component {
           </div>
         </section>
       </div>
+      </VerticalContent>
     );
   }
 }

@@ -1,3 +1,5 @@
+/* 헤더 아이템 스타일 */
+/* src/components/HeaderItem.js */
 .header-item {
     position: relative;
     display: flex;
@@ -26,7 +28,7 @@
 .header-item .tooltip {
     position: absolute;
     top: 100%;
-    left: 50%;
+    left: 4.5vh;
     transform: translateX(-50%);
     background-color: rgba(0, 0, 0, 0.8);
     color: rgb(255, 255, 255);
@@ -78,7 +80,7 @@
     content: '';
     position: absolute;
     top: 50%;
-    left: 25%;
+    left: 4.5vh;
     width: 20px;
     height: 20px;
     background: rgb(255, 255, 255);

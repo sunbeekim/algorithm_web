@@ -6,8 +6,9 @@ import VerticalContent from './VerticalContent';
 
 function Bottom() {
     return (
-        <VerticalContent>
+        <VerticalContent className="bottom-container">
         <footer className="bottom">
+            
             <div className="bottom-content">
                 {/* About Us 섹션 */}
                 <div className="bottom-section">
@@ -58,8 +59,10 @@ function Bottom() {
             <div className="bottom-footer">
                 <p>&copy; 2024 Your Website. All rights reserved.</p>
             </div>
+           
         </footer>
         </VerticalContent>
+        
     );
 }
 

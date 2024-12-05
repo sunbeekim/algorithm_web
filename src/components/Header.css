@@ -1,30 +1,24 @@
 /* Header.css */ 
 /* // src/components/Header.css */
-/* 1. 공통 변수 */
-:root {
-    --header-height: 65px;
-    --primary-color: #006666;
-    --primary-hover: #004444;
-    --dropdown-bg: rgba(4, 95, 104, 0.98);
-    --shadow-color: rgba(0, 0, 0, 0.1);
-    --white-glow: rgba(255, 255, 255, 0.8);
-    --transition-default: all 0.3s ease;
-}
+
 
 /* 2. 헤더 기본 스타일 */
 .header {
     background: linear-gradient(
-        45deg,
-        #0694a2, #06b6d4, #0891b2, #0e7490,
-        #0891b2, #06b6d4, #0694a2, #0ea5e9,
-        #38bdf8, #7dd3fc
+        135deg, /* 색상 순서 변경(회각) */
+        #452a72, #186074, #2557c2, #0e7490, #3c73b1, 
+#0694a2, #0694a2, #0891b2, #0891b2, #0891b2, 
+#7f5bd4, #e230bc, #0ea5e9, #0ea5e9, #06b6d4, 
+#06b6d4, #38bdf8, #66bbe2, #53e4e4, #7dd3fc, 
+#ffffff
     );
-    background-size: 400% 400%;
+    background-size: 800% 400%;
     animation: waveGradient 12s ease-in-out infinite;
     box-shadow: 0 2px 4px var(--shadow-color);
-    position: relative;
+    position: fixed;
+    width: 100%;
     z-index: 1000;
-    height: var(--header-height);
+    height: 6.5vh;
     overflow: visible;
 }
 
@@ -220,30 +214,6 @@
     }
 
 }
-
-/* 9. 애니메이션 */
-@keyframes waveGradient {
-    0% {
-        background-position: 0% 50%;
-        transform: perspective(1000px) rotateX(0.5deg);
-    }
-    25% {
-        background-position: 50% 25%;
-        transform: perspective(1000px) rotateX(0deg);
-    }
-    50% {
-        background-position: 100% 50%;
-        transform: perspective(1000px) rotateX(-0.5deg);
-    }
-    75% {
-        background-position: 50% 75%;
-        transform: perspective(1000px) rotateX(0deg);
-    }
-    100% {
-        background-position: 0% 50%;
-        transform: perspective(1000px) rotateX(0.5deg);
-    }
- }
 
     
  

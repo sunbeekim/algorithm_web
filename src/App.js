@@ -18,7 +18,7 @@ import { FaArrowUp } from 'react-icons/fa';
 import Admin from './pages/Admin';
 import ChatRoom from './pages/ChatRoom';
 import PrivateRoute from './components/PrivateRoute';
-
+import Test from './pages/Test';
 function App() {
   const [showButton, setShowButton] = useState(false);
 
@@ -71,32 +71,39 @@ function App() {
         </div>
         <div className="content-container">
           <Routes>
-            <Route default path="/" element={<Home />} />
+            
             <Route path="/home" element={<Home />} />
             <Route path="/board/*" element={<Board />} />
             <Route path="/coding" element={<Coding />} />
             <Route path="/algorithm" element={<Algorithm />} />
-            <Route path="/ranking" element={<Ranking />} />
-            {/* <Route path="/paint" element={<Paint />} /> */}
-            <Route path="/chatroom/:id" element={
+            <Route path="/ranking" element={<Ranking />} />            
+            <Route path="/admin" element={<Admin />} />
+
+            <Route 
+                path="/draw" 
+                element={<Canvas isPublicMode={true} />} 
+            />
+            
+            <Route 
+                path="/chatroom/:id" 
+                element={
                     <PrivateRoute>
                         <ChatRoom />
                     </PrivateRoute>
-                } />
-            <Route path="/admin" element={<Admin />} />
-            <Route path="*" element={<Navigate to="/" replace />} />
-            {/* 채팅방 라우트 추가 */}
-            
+                } 
+            />
+            <Route path="/test" element={<Test />} />
+            {/* 테스트 페이지 app.js, Test.js, Heder.js*/}
           </Routes>
         </div>
         
         <div id="modal-root"></div>
        
       </div>
-      <div className="bottom-container">
+      
       
       <Bottom />
-      </div>
+     
     </AuthProvider>
   );
 }

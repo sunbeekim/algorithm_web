@@ -52,7 +52,7 @@ console.log('=================================');
 
 // CORS 설정
 app.use(cors({
-    origin: 'http://183.105.171.41:3000',
+    origin: ['http://183.105.171.41:3000', 'http://localhost:3000', 'http://192.168.0.101:3000'],
     methods: ['GET', 'POST', 'OPTIONS'],
     allowedHeaders: ['Content-Type', 'Accept'],
     credentials: true

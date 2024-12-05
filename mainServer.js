@@ -30,7 +30,7 @@ const JWT_SECRET = 'your-secret-key';
 
 // CORS 설정을 더 상세하게 지정
 const corsOptions = {
-    origin: ['http://183.105.171.41:3000', 'http://localhost:3000'],
+    origin: ['http://183.105.171.41:3000', 'http://localhost:3000', 'http://192.168.0.101:3000'],
     methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
     allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With', 'Accept'],
     credentials: true,
@@ -42,7 +42,7 @@ app.use(cors(corsOptions));
 
 // 모든 라우트에 대해 CORS 헤더 추가
 app.use((req, res, next) => {
-    res.header('Access-Control-Allow-Origin', 'http://183.105.171.41:3000');
+    res.header('Access-Control-Allow-Origin', 'http://183.105.171.41:3000', 'http://localhost:3000', 'http://192.168.0.101:3000');
     res.header('Access-Control-Allow-Credentials', 'true');
     res.header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
     res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept, Authorization');
@@ -105,11 +105,19 @@ const verifyToken = (req, res, next) => { // 미들웨어 추가
 };
 
 // MySQL 연결 설정
+// const db = mysql.createConnection({
+//     host: 'db-2vusd7-kr.vpc-pub-cdb.ntruss.com', // 데이터베이스 호스트
+//     port: 3306, // 데이터베이스 포트
+//     user: 'aluser1', // 데이터베이스 사용자
+//     password: 'alpassword2450!', // 데이터베이스 비밀번호
+//     database: 'basicdb' // 이베이스 이름
+// });
+
 const db = mysql.createConnection({
-    host: 'db-2vusd7-kr.vpc-pub-cdb.ntruss.com', // 데이터베이스 호스트
+    host: 'localhost', // 데이터베이스 호스트
     port: 3306, // 데이터베이스 포트
-    user: 'aluser1', // 데이터베이스 사용자
-    password: 'alpassword2450!', // 데이터베이스 비밀번호
+    user: 'root', // 데이터베이스 사용자
+    password: 'pass', // 데이터베이스 비밀번호
     database: 'basicdb' // 이베이스 이름
 });
 
@@ -681,7 +689,7 @@ const wss = new WebSocket.Server({
   server: server,  
   path: '/ws',
   cors: {
-      origin: ['http://183.105.171.41:3000', 'http://localhost:3000'],
+      origin: ['http://183.105.171.41:3000', 'http://localhost:3000', 'http://192.168.0.101:3000'],
       methods: ['GET', 'POST']
   }
 });
@@ -896,7 +904,7 @@ app.post('/api/signup', async (req, res) => {
         INSERT INTO users (
           username, 
           password, 
-          name, 
+          forename, 
           email, 
           phone,
           role_id,

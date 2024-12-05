@@ -14,6 +14,7 @@ function ChatModal({ show, chatName, chatroomId, onClose }) {
     const reconnectAttempts = useRef(0);
     const maxReconnectAttempts = 5;
     const reconnectTimeoutRef = useRef(null);
+    const [isMinimized, setIsMinimized] = useState(false);
 
     useEffect(() => {
         const connectWebSocket = () => {
@@ -76,7 +77,7 @@ function ChatModal({ show, chatName, chatroomId, onClose }) {
                 
                 newWs.onclose = (event) => {
                     if (event.wasClean) {
-                        console.log(`WebSocket 연결 정상 종료 (코드=${event.code})`);
+                        console.log(`WebSocket 연결 정상 종�� (코드=${event.code})`);
                     } else {
                         console.log('WebSocket 연결 끊김');
                         setIsConnected(false);
@@ -206,34 +207,45 @@ function ChatModal({ show, chatName, chatroomId, onClose }) {
     }
 
     return (
-        <div className="chat-modal">
+        <div className={`chat-modal ${isMinimized ? 'minimized' : ''}`}>
             <div className="chat-header">
                 <h3>{chatName}</h3>
-                <button onClick={onClose} className="close-button">×</button>
-            </div>
-            <div className="chat-history" ref={chatContainerRef}>
-                {chatHistory.map(msg => (
-                    <div 
-                        key={msg.id} 
-                        className={`chat-message ${msg.sender === 'me' ? 'sent' : 'received'}`}
+                <div className="header-buttons">
+                    <button 
+                        onClick={() => setIsMinimized(!isMinimized)} 
+                        className="minimize-button"
                     >
-                        {msg.sender !== 'me' && (
-                            <div className="message-sender">{msg.forename}</div>
-                        )}
-                        <div className="message-content">{msg.text}</div>
-                        <div className="message-timestamp">{msg.timestamp}</div>
-                    </div>
-                ))}
+                        {isMinimized ? '▲' : '▼'}
+                    </button>                    
+                </div>
             </div>
-            <form onSubmit={handleSubmit} className="chat-input-form">
-                <input
-                    type="text"
-                    value={message}
-                    onChange={(e) => setMessage(e.target.value)}
-                    placeholder="메시지를 입력하세요..."
-                />
-                <button type="submit">전송</button>
-            </form>
+            {!isMinimized && (
+                <>
+                    <div className="chat-history" ref={chatContainerRef}>
+                        {chatHistory.map(msg => (
+                            <div 
+                                key={msg.id} 
+                                className={`chat-message ${msg.sender === 'me' ? 'sent' : 'received'}`}
+                            >
+                                {msg.sender !== 'me' && (
+                                    <div className="message-sender">{msg.forename}</div>
+                                )}
+                                <div className="message-content">{msg.text}</div>
+                                <div className="message-timestamp">{msg.timestamp}</div>
+                            </div>
+                        ))}
+                    </div>
+                    <form onSubmit={handleSubmit} className="chat-input-form">
+                        <input
+                            type="text"
+                            value={message}
+                            onChange={(e) => setMessage(e.target.value)}
+                            placeholder="메시지를 입력하세요..."
+                        />
+                        <button type="submit">전송</button>
+                    </form>
+                </>
+            )}
         </div>
     );
 }

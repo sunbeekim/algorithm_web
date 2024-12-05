@@ -10,7 +10,7 @@
     top: 40%;
     transform: translateY(-35%);
     right: 0;
-    z-index: 1000;
+    z-index: 998;
     width: 60px;
     box-shadow: -2px 0 10px rgba(0,0,0,0.1);
 }
@@ -26,22 +26,15 @@
     background-color: transparent;
 }
 
-.color-picker:disabled {
-    opacity: 0.5;
-    cursor: not-allowed;
-}
-
 /* 브러시 크기 조절 슬라이더 */
 .brush-size {
-    flex: 1;
-    max-width: 200px;
+    width: 150px;
     height: 4px;
     -webkit-appearance: none;
     background: #dee2e6;
     border-radius: 2px;
     outline: none;
     transform: rotate(-90deg);
-    width: 150px;
     margin: 75px 0;
 }
 
@@ -52,17 +45,6 @@
     border-radius: 50%;
     background: #007bff;
     cursor: pointer;
-    transition: background .15s ease-in-out;
-}
-
-.brush-size::-moz-range-thumb {
-    width: 16px;
-    height: 16px;
-    border: 0;
-    border-radius: 50%;
-    background: #007bff;
-    cursor: pointer;
-    transition: background .15s ease-in-out;
 }
 
 /* 도구 버튼 공통 스타일 */
@@ -71,8 +53,6 @@
     height: 40px;
     border: none;
     border-radius: 4px;
-    background-color: #ffffff;
-    color: #495057;
     cursor: pointer;
     display: flex;
     align-items: center;
@@ -81,50 +61,30 @@
     box-shadow: 0 1px 3px rgba(0,0,0,0.1);
 }
 
-.tools button:hover {
-    background-color: #e9ecef;
-    transform: translateY(-1px);
-}
-
-.tools button:active {
-    transform: translateY(0);
-}
-
-/* 개별 버튼 스타일 */
-.eraser-button {
+/* 개별 버튼 스타일 - 더 구체적인 선택자 사용 */
+.tools .eraser-button {
     background-color: #ffffff;
+    color: #495057;
 }
 
-.eraser-button.active {
+.tools .eraser-button.active {
     background-color: #007bff;
     color: white;
 }
 
-.clear-button {
+.tools .clear-button {
     background-color: #ffc107;
     color: #000;
 }
 
-.clear-button:hover {
-    background-color: #ffca2c;
-}
-
-.delete-button {
+.tools .delete-button {
     background-color: #dc3545;
     color: white;
 }
 
-.delete-button:hover {
-    background-color: #bb2d3b;
-}
-
-.add-canvas-button {
+.tools .add-canvas-button {
     background-color: #198754;
     color: white;
-}
-
-.add-canvas-button:hover {
-    background-color: #157347;
 }
 
 /* 아이콘 크기 조정 */
@@ -133,61 +93,10 @@
     height: 20px;
 }
 
-/* 모바일 대응 */
+/* 모바일 대응 - 필수적인 것만 유지 */
 @media (max-width: 768px) {
     .tools {
         width: 50px;
         padding: 10px;
-    }
-
-    .color-picker,
-    .tools button {
-        width: 36px;
-        height: 36px;
-    }
-
-    .brush-size {
-        width: 120px;
-        margin: 60px 0;
-        transform: rotate(-90deg);
-    }
-
-    .tools button svg {
-        width: 18px;
-        height: 18px;
-    }
-}
-
-/* 다크 모드 대응 */
-@media (prefers-color-scheme: dark) {
-    .tools {
-        background-color: #343a40;
-        border-left-color: #495057;
-    }
-
-    .tools button {
-        background-color: #495057;
-        color: #f8f9fa;
-    }
-
-    .tools button:hover {
-        background-color: #6c757d;
-    }
-
-    .brush-size {
-        background: #495057;
-    }
-}
-
-@media (max-width: 480px) {
-    .tools {
-        width: 44px;
-        padding: 8px;
-    }
-
-    .brush-size {
-        width: 100px;
-        margin: 50px 0;
-        transform: rotate(-90deg);
     }
 } 

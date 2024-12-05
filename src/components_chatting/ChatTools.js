@@ -10,7 +10,7 @@ import './ChatTools.css';
 
 const API_BASE_URL = process.env.REACT_APP_API_BASE_URL || 'http://183.105.171.41:8080';
 
-function ChatTools({ ws, chatroomId, onChatToggle }) {
+function ChatTools({ ws, onChatToggle, onChatSelect }) {
     const [isChatting, setIsChatting] = useState(false);
     const [chatName, setChatName] = useState('');
     const [chatRooms, setChatRooms] = useState([]);
@@ -98,6 +98,11 @@ function ChatTools({ ws, chatroomId, onChatToggle }) {
                 type: 'join',
                 chatroomId: parseInt(newChatName, 10)
             }));
+        }
+
+        // onChatSelect가 props로 전달된 경우에만 실행
+        if (onChatSelect) {
+            onChatSelect(parseInt(newChatName, 10));
         }
     };
 

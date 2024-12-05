@@ -10,7 +10,7 @@ import AuthButton from './AuthButton';
 import MobileDropdown from './MobileDropdown';
 import HomeButton from './HomeButton';
 import HeaderItem from './HeaderItem';  // HeaderItem 컴포넌트 임포트 추가
-
+import { MdAdminPanelSettings } from 'react-icons/md'; // 관리자 패널 아이콘
 
 // 아이콘 임포트
 import { AiFillHome } from 'react-icons/ai';
@@ -19,18 +19,29 @@ import { BiCodeAlt, BiLogIn, BiLogOut } from 'react-icons/bi';
 import { FaChartBar } from 'react-icons/fa';
 import { CiKeyboard } from "react-icons/ci";
 import { SiThealgorithms } from "react-icons/si";
-
+import { BiTestTube } from 'react-icons/bi';  // 테스트 아이콘 추가
 
 // API URL을 항상 실제 서버 주소로 설정
 // localhost 대신 실제 서버 IP 사용
 const API_URL = 'http://183.105.171.41:8080';
 
+// 공통 메뉴
 const MENU_ITEMS = [
     { path: '/board', name: '게시판', icon: <CiKeyboard /> },
     { path: '/coding', name: '코딩', icon: <BiCodeAlt /> },
     { path: '/algorithm', name: '알고리즘', icon: <SiThealgorithms /> },
-    { path: '/chatroom/:chatroomId', name: '그림판채팅', icon: <BsFillPencilFill /> },
-    { path: '/ranking', name: '랭킹', icon: <FaChartBar /> }
+    { path: '/ranking', name: '랭킹', icon: <FaChartBar /> },
+    { path: '/test', name: '테스트페이지', icon: <BiTestTube /> }  // 콤마 추가하고 아이콘 변경
+];
+
+// 로그인 사용자 전용 메뉴
+const AUTH_MENU_ITEMS = [
+    { path: '/chatroom/1', name: '그림판채팅', icon: <BsFillPencilFill /> }
+];
+
+// 비로그인 사용자 전용 메뉴
+const PUBLIC_MENU_ITEMS = [
+    { path: '/draw', name: '그림판', icon: <BsFillPencilFill /> }
 ];
 
 function Header() {
@@ -175,6 +186,7 @@ function Header() {
 
     // 렌더링
     return (
+        <div>
         <header className="header">
             <div className="header-content">
                 {/* 홈 버튼 섹션 */}                    
@@ -186,6 +198,7 @@ function Header() {
                 <nav className="desktop-menu">
                     
                     <div className="menu-items">
+                        {/* 공통 메뉴 렌더링 */}
                         {MENU_ITEMS.map((menu) => (
                             <HeaderItem 
                                 key={menu.path}
@@ -198,11 +211,41 @@ function Header() {
                                 }}
                             />
                         ))}
-                        {/* 관리자 메뉴 추가 */}
+        
+                        {/* 로그인 상태에 따른 그림판 메뉴 렌더링 */}
+                        {authState.isAuthenticated ? 
+                            AUTH_MENU_ITEMS.map((menu) => (
+                                <HeaderItem 
+                                    key={menu.path}
+                                    to={menu.path}
+                                    icon={menu.icon}
+                                    tooltip={menu.name}
+                                    onClick={(e) => {
+                                        e.preventDefault();
+                                        navigate(menu.path);
+                                    }}
+                                />
+                            ))
+                            : 
+                            PUBLIC_MENU_ITEMS.map((menu) => (
+                                <HeaderItem 
+                                    key={menu.path}
+                                    to={menu.path}
+                                    icon={menu.icon}
+                                    tooltip={menu.name}
+                                    onClick={(e) => {
+                                        e.preventDefault();
+                                        navigate(menu.path);
+                                    }}
+                                />
+                            ))
+                        }
+
+                        {/* 관리자 메뉴 */}
                         {authState.isAuthenticated && authState.user?.roleId === 1 && (
                             <HeaderItem 
                                 to="/admin"
-                                icon={<FaChartBar />}
+                                icon={<MdAdminPanelSettings />}
                                 tooltip="관리자"
                                 onClick={(e) => {
                                     e.preventDefault();
@@ -273,6 +316,7 @@ function Header() {
                 onClose={() => setShowSignupModal(false)}
             />
         </header>
+        </div>
     );
     
 }

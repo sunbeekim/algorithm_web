@@ -3,11 +3,11 @@ import Body from '../components/Body';
 
 class Algorithm extends Component {
   render(){
-    return(
- 
+    return( 
             <div>
+              <span>Python crolling Subject </span>
+              <span type="input"></span>
             </div>
-
     )
   }
 }

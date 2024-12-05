@@ -1,6 +1,7 @@
 /* 게시판 페이지 스타일 */
 /* src/pages/Board.css */
 .board-container {
+    margin-top: 6.5vh;
     padding: 20px;
     min-height: calc(100vh - 80px);
     background-color: #f8f9fa;

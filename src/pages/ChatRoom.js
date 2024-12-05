@@ -9,13 +9,16 @@ import './ChatRoom.css';
 import ChatTools from '../components_chatting/ChatTools';
 
 function ChatRoom() {
+    // URL 파라미터에서 채팅방 ID 추출
     const { id } = useParams();
     const navigate = useNavigate();
-    const [chatName, setChatName] = useState('');
-    const [showChat, setShowChat] = useState(false);
-    const [activeCanvasChatId, setActiveCanvasChatId] = useState(null);
 
-    // id 값 디버깅
+    // 상태 관리
+    const [chatName, setChatName] = useState('');  // 채팅방 이름
+    const [showChat, setShowChat] = useState(false);  // 채팅창 표시 여부
+    const [activeCanvasChatId, setActiveCanvasChatId] = useState(null);  // 현재 활성화된 캔버스 ID
+
+    // 채팅방 ID 디버깅용 useEffect
     useEffect(() => {
         console.log('현재 채팅방 ID:', {
             rawId: id,
@@ -24,7 +27,7 @@ function ChatRoom() {
         });
     }, [id]);
 
-    // 채팅방 정보 가져오기
+    // 사용자 채팅방 정보 조회 useEffect
     useEffect(() => {
         const fetchChatRoomInfo = async () => {
             if (!id) {
@@ -34,6 +37,7 @@ function ChatRoom() {
 
             console.log('채팅방 정보 가져오기 시도:', id);
             try {
+                // API 호출하여 채팅방 정보 가져오기
                 const response = await fetch(`http://183.105.171.41:8081/api/chatrooms/${id}`, {
                     credentials: 'include'
                 });
@@ -44,8 +48,8 @@ function ChatRoom() {
 
                 const data = await response.json();
                 console.log('채팅방 정보:', data);
-                setChatName(data.chatname);
-                setShowChat(true);
+                setChatName(data.chatname);  // 채팅방 이름 설정
+                setShowChat(true);  // 채팅창 표시
             } catch (error) {
                 console.error('채팅방 정보 로드 실패:', error);
             }
@@ -54,7 +58,7 @@ function ChatRoom() {
         fetchChatRoomInfo();
     }, [id]);
 
-    // Chat In/Out 토글 핸들러 수정
+    // 채팅 토글 핸들러 (Chat In/Out 처리)
     const handleChatToggle = (isActive, chatId) => {
         console.log('Chat Toggle:', {
             isActive,
@@ -62,11 +66,11 @@ function ChatRoom() {
             currentId: id
         });
 
-        // chatId가 없을 경우 현재 채팅방 ID 사용
+        // chatId가 없으면 현재 채팅방 ID 사용
         const targetChatId = chatId || parseInt(id, 10);
         
-        setShowChat(isActive);
-        setActiveCanvasChatId(isActive ? targetChatId : null);
+        setShowChat(isActive);  // 채팅창 표시/숨김
+        setActiveCanvasChatId(isActive ? targetChatId : null);  // 캔버스 활성화/비활성화
         
         console.log('Canvas에 전달될 ID:', {
             isActive,
@@ -75,7 +79,7 @@ function ChatRoom() {
         });
     };
 
-    // 채팅방 선택 핸들러 수정
+    // 채팅방 선택 핸들러
     const handleChatSelect = (newChatId) => {
         console.log('채팅방 선택:', {
             newChatId,
@@ -83,12 +87,12 @@ function ChatRoom() {
             activeCanvasChatId
         });
         
-        navigate(`/chatroom/${newChatId}`);
-        setShowChat(true);
-        setActiveCanvasChatId(newChatId);
+        navigate(`/chatroom/${newChatId}`);  // 새 채팅방으로 이동
+        setShowChat(true);  // 채팅창 표시
+        setActiveCanvasChatId(newChatId);  // 새 캔버스 활성화
     };
 
-    // 상태 변경 모니터링
+    // 상태 변경 모니터링용 useEffect
     useEffect(() => {
         console.log('ChatRoom 상태 업데이트:', {
             id,
@@ -98,14 +102,12 @@ function ChatRoom() {
         });
     }, [id, chatName, showChat, activeCanvasChatId]);
 
+    // 컴포넌트 렌더링
     return (
         <div className="chatroom-container">
-            <ChatTools 
-                chatroomId={parseInt(id, 10)} 
-                onChatSelect={handleChatSelect}
-                onChatToggle={handleChatToggle}
-            />
             <div className="chatroom-content">
+                {/* 캔버스 섹션 */}
+                
                 <div className="canvas-section">
                     {console.log('Canvas로 전달되는 activeCanvasChatId:', activeCanvasChatId)}
                     {activeCanvasChatId && (
@@ -116,17 +118,14 @@ function ChatRoom() {
                     )}
                 </div>
                 
-                <ChatModal 
-                    show={showChat}
-                    chatName={chatName}
-                    chatroomId={parseInt(id, 10)}
-                    onClose={() => {
-                        console.log('ChatModal 닫기');
-                        setShowChat(false);
-                        setActiveCanvasChatId(null);
-                    }}
-                />
             </div>
+            {/* 채팅 도구 모음 */}
+            <ChatTools 
+                chatroomId={parseInt(id, 10)} 
+                onChatSelect={handleChatSelect}
+                onChatToggle={handleChatToggle}
+            />
+            
         </div>
     );
 }

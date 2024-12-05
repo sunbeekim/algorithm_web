@@ -5,6 +5,7 @@
     background-color: rgb(255, 255, 255);
     min-height: 100vh;
     position: relative;
+    margin-top: 6.4vh;
 }
 
 /* 공통 섹션 스타일 */
@@ -35,14 +36,14 @@
     padding-top: 0; /* 상단 패딩 제거 */
 }
 
-/* BodyRectangle 스타일 수정 (만약 BodyRectangle 컴포넌트의 스타일을 직접 수정할 수 없다면) */
+/* BodyRectangle 스타일 수정 (만약 BodyRectangle 컴포넌트의 스타일을 직접 수정할 수 없다면)
 .main-section .body-rectangle {
     margin-bottom: 0;
     height: 100%;
     display: flex;
     flex-direction: column;
     justify-content: center;
-}
+} */
 
 .section-content {
     max-width: 1200px;

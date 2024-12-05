@@ -6,7 +6,7 @@ import DrawingTools from './DrawingTools';
 
 const WS_URL = process.env.REACT_APP_WS_URL || 'ws://183.105.171.41:8081/ws';
 
-function Canvas({ chatroomId }) {
+function Canvas({ chatroomId, isPublicMode = false }) {
     console.log('Canvas 컴포넌트 마운트:', { chatroomId });
     
     // =========== 상태 선언 ===========
@@ -212,7 +212,7 @@ const handleTouchMove = useCallback((e, canvasId) => {
             const drawData = {
                 type: 'draw',
                 chatroomId: currentChatroomId,
-                clientChatroomId: currentChatroomId,
+                
                 x: coords.x,
                 y: coords.y,
                 lastX: lastX,
@@ -305,7 +305,7 @@ const handleTouchEnd = useCallback(() => {
             ws.send(JSON.stringify({
                 type: 'addCanvas',
                 chatroomId: currentChatroomId,
-                clientChatroomId: currentChatroomId,
+                
                 canvasId: newId
             }));
         }
@@ -330,7 +330,7 @@ const handleTouchEnd = useCallback(() => {
             ws.send(JSON.stringify({
                 type: 'deleteCanvas',
                 chatroomId: currentChatroomId,
-                clientChatroomId: currentChatroomId,
+                
                 canvasId: id
             }));
         }
@@ -408,13 +408,13 @@ const handleWebSocketMessage = useCallback(async (event) => {
                     return prevCanvases;
                 });
                 break;
+            }
+        } catch (error) {
+            console.error('메시지 처리 중 오류:', error);
         }
-    } catch (error) {
-        console.error('메시지 처리 중 오류:', error);
-    }
-}, [drawLine, activeCanvasId, setCanvases]);
+    }, [drawLine, activeCanvasId, setCanvases]);
 
-// WebSocket 에러 핸들러
+    // WebSocket 에러 핸들러
     const handleWebSocketError = (error) => {
         console.error('WebSocket 에러:', error);
     };
@@ -422,11 +422,12 @@ const handleWebSocketMessage = useCallback(async (event) => {
     // WebSocket 연결 종료 핸들러
     const handleWebSocketClose = (event) => {
         if (!event.wasClean) {
-            handleReconnect();
+            setActiveCanvasId(null);  // 활성 캔버스 ID 초기화
+            
         }
     };
 
-// 재연결 핸들러
+    // 재연결 핸들러
     const handleReconnect = useCallback(() => {
         if (reconnectAttempts.current < maxReconnectAttempts) {
             reconnectTimeoutRef.current = setTimeout(() => {
@@ -534,6 +535,15 @@ const handleWebSocketMessage = useCallback(async (event) => {
         console.log('현재 chatroomId:', chatroomId);
     }, [chatroomId]);
 
+    // WebSocket 연결 조건부 처리
+    useEffect(() => {
+        if (isPublicMode) return; // 비로그인 모드에서는 WebSocket 연결 안함
+        
+        // 기존 WebSocket 연결 로직...
+    }, [chatroomId, isPublicMode]);
+
+    const canvasWidth = 600; // 너비를 600px로 변경
+    const canvasHeight = (canvasWidth / 3) * 4; // 3:4 비율로 높이 계산 (800px)
 
     return (
         <div className="canvas-container" ref={containerRef}>
@@ -543,8 +553,8 @@ const handleWebSocketMessage = useCallback(async (event) => {
                         key={canvas.id}
                         ref={el => el && initializeCanvas(el, canvas.id)}
                         className="canvas"
-                        width={800}
-                        height={1000}
+                        width={canvasWidth}
+                        height={canvasHeight}
                         onMouseDown={e => handleDrawStart(e, canvas.id)}
                         onMouseMove={e => handleDrawMove(e, canvas.id)}
                         onMouseUp={handleDrawEnd}
@@ -553,28 +563,30 @@ const handleWebSocketMessage = useCallback(async (event) => {
                         onTouchMove={e => handleTouchMove(e, canvas.id)}
                         onTouchEnd={handleTouchEnd}
                         style={{
-                            width: `${canvasSize.width}px`,
-                            height: `${canvasSize.height}px`,
-                            border: canvas.id === activeCanvasId ? '2px solid #0066ff' : '1px solid #000',
-                            touchAction: 'none', // 터치 동작 방지
+                            width: `${canvasWidth}px`,
+                            height: `${canvasHeight}px`,
+                            border: canvas.id === activeCanvasId ? '2px solid #48c0c9' : '1px solid #dad2d2',
+                            touchAction: 'none',
                             cursor: isEraser ? 'cell' : 'crosshair'
                         }}
                     />
                 ))}
             </div>
-            <DrawingTools
-                color={color}
-                brushSize={brushSize}
-                isEraser={isEraser}
-                onColorChange={setColor}
-                onBrushSizeChange={setBrushSize}
-                onEraserToggle={toggleEraser}
-                onClear={clearCanvas}
-                onAddCanvas={addCanvas}
-                onDeleteCanvas={deleteCanvas}
-                canvasId={canvases[0]?.id}
-                activeCanvasId={activeCanvasId}
-            />
+            
+                <DrawingTools
+                    color={color}
+                    brushSize={brushSize}
+                    isEraser={isEraser}
+                    onColorChange={setColor}
+                    onBrushSizeChange={setBrushSize}
+                    onEraserToggle={toggleEraser}
+                    onClear={clearCanvas}
+                    onAddCanvas={addCanvas}
+                    onDeleteCanvas={deleteCanvas}
+                    canvasId={canvases[0]?.id}
+                    activeCanvasId={activeCanvasId}
+                />
+           
         </div>
     );
     

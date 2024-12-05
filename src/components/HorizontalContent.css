@@ -1,23 +1,20 @@
+/* /src/components/HorizontalContent.css */
 
 .horizontal-content {
-    background-color: #1b06db;
- 
+    border: 1px solid #000000; 
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
     padding: 20px;
-    min-height: 200px;
-    flex: 1;
     display: flex;
+    flex: 1;
     flex-direction: row; /* 가로 방향 정렬 */
     align-items: flex-start; /* 상단 정렬 */
     flex-wrap: wrap; /* 필요시 줄바꿈 */
+    margin-top: 6.5vh; /* 여백 제거 */
+    height: 100%; /* 높이 최대화 */
 }
 
 /* 반응형 디자인 */
 @media (max-width: 768px) {
-    .horizontal-wrapper {
-        padding: 10px;
-    }
-    
     .horizontal-content {
         padding: 15px;
         flex-direction: column; /* 모바일에서는 세로로 변경 */
